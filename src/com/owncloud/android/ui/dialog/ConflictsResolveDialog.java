@@ -60,6 +60,7 @@ public class ConflictsResolveDialog extends SherlockDialogFragment {
         String remotepath = getArguments().getString("remotepath");
         return new AlertDialog.Builder(getSherlockActivity())
                    .setIcon(R.drawable.icon)
+                   .setIcon(R.drawable.friendicon)
                    .setTitle(R.string.conflict_title)
                    .setMessage(String.format(getString(R.string.conflict_message), remotepath))
                    .setPositiveButton(R.string.conflict_overwrite,

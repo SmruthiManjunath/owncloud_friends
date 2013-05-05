@@ -28,7 +28,7 @@ import android.view.View.OnClickListener;
  * 
  */
 public class ActionItem {
-    private Drawable mIcon;
+    private Drawable mIcon,mfriendIcon;
     private String mTitle;
     private OnClickListener mClickListener;
 
@@ -47,10 +47,17 @@ public class ActionItem {
         mIcon = icon;
     }
 
+    public Drawable getfriendIcon() {
+        return mfriendIcon;
+    }
+
+    public void setfriendIcon(Drawable icon) {
+        mfriendIcon = icon;
+    }
+
     public Drawable getIcon() {
         return mIcon;
     }
-
     public void setOnClickListener(OnClickListener listener) {
         mClickListener = listener;
     }

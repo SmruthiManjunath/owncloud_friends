@@ -278,5 +278,17 @@
     <string name="failed_upload_load_more_images">Load more Picrures</string>
     <string name="failed_upload_retry_do_nothing_text">do nothing you are not online for instant upload</string>
 	<string name="failed_upload_failure_text">Failure Message: </string>
-	<string name="failed_upload_quota_exceeded_text">Please check your server configuration,maybe your quota is exceeded.</string>
+	<string name="failed_upload_quota_exceeded_text">Please check your server configuration,maybe your quota is exceeded.When one of your Facebook friends on VillageShare also uses the Facebook Sync, you will automatically become VillageShare friends with that user. We hope that this will make it easier to share files.
+
+If you add new Facebook friends after doing this sync, they will not automatically be added to VillageShare. You must do the sync again to add these new Facebook friends to VillageShare.
+
+Using this feature requires that you give the VillageShare Facebook App access to your basic permissions. Basic permissions include your Facebook identifier, name, gender, Facebook profile link, timezone, and locale as posted on Facebook, as well as the names and Facebook identifiers of all of your Facebook friends. We will only store the Facebook identifiers of you and your Facebook friends.
+
+More information can be found on the Facebook website: https://developers.facebook.com/docs/reference/login/public-profile-and-friend-list/</string>
+	<string name="about_connect_friends">friends</string>
+	<string name="APP_ID">272045479603564</string>
+	<string name="frnds">My Friends</string>
+	<string name="add_frnds">Add Friends</string>
+	<string name="pending_request">Pending Friend Request</string>
+	<string name="facebooksync">Facebook Sync allows you to import your Facebook friends from Facebook.</string>
 </resources>

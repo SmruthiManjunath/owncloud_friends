@@ -233,14 +233,16 @@ public class QuickAction extends CustomPopup {
         View view;
         String title;
         Drawable icon;
+        Drawable friendicon;
         OnClickListener listener;
 
         for (int i = 0; i < actionList.size(); i++) {
             title = actionList.get(i).getTitle();
             icon = actionList.get(i).getIcon();
+            friendicon = actionList.get(i).getfriendIcon();
             listener = actionList.get(i).getOnClickListerner();
 
-            view = getActionItem(title, icon, listener);
+            view = getActionItem(title, icon, friendicon, listener);
 
             view.setFocusable(true);
             view.setClickable(true);
@@ -257,16 +259,21 @@ public class QuickAction extends CustomPopup {
      * @param listener {@link View.OnClickListener} action item listener
      * @return action item {@link View}
      */
-    private View getActionItem(String title, Drawable icon,
+    private View getActionItem(String title, Drawable icon, Drawable friendicon,
             OnClickListener listener) {
         LinearLayout container = (LinearLayout) inflater.inflate(
                 R.layout.action_item, null);
 
         ImageView img = (ImageView) container.findViewById(R.id.icon);
+        ImageView frndimg = (ImageView) container.findViewById(R.id.friendicon);
         TextView text = (TextView) container.findViewById(R.id.title);
 
         if (icon != null) {
             img.setImageDrawable(icon);
+        }
+        
+        if (friendicon != null) {
+            frndimg.setImageDrawable(friendicon);
         }
 
         if (title != null) {

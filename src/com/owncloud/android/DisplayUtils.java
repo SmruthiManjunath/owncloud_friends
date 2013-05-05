@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import android.util.Log;
 
 /**
  * A helper class for some string operations.

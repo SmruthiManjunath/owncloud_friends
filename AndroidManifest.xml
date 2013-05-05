@@ -39,7 +39,7 @@
     
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="13" />
+        android:targetSdkVersion="11" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" >
     </uses-permission>
@@ -61,8 +61,10 @@
         </activity>
  		<activity android:name=".ui.activity.InstantUploadActivity">
         </activity>
+        
         <activity android:name=".ui.activity.FailedUploadActivity" android:theme="@android:style/Theme.Dialog" android:excludeFromRecents="true"/>
         <activity android:name=".Uploader" >
+             
             <intent-filter>
                 <action android:name="android.intent.action.SEND" >
                 </action>
@@ -152,6 +154,13 @@
         <activity android:name=".ui.activity.ConflictsResolveActivity"/>
         <activity android:name=".ui.activity.GenericExplanationActivity"/>
         <activity android:name=".ui.activity.ErrorsWhileCopyingHandlerActivity"/>
+        <activity android:name=".ui.activity.FacebookSync"/>
+        <activity android:name=".ui.activity.TabLayoutActivity"/>
+        <activity android:name=".ui.activity.YourFriendsActivity" />
+        <activity android:name=".ui.activity.AddFriendsActivity" />
+        <activity android:name=".ui.activity.AcceptFriendRequestsActivity" />
+        <activity android:name=".ui.activity.FriendsActivity"/>
+        
         
         <service android:name=".files.services.InstantUploadService" />
         <receiver android:name=".files.InstantUploadBroadcastReceiver">
@@ -169,6 +178,7 @@
             </intent-filter>
         </receiver>
         <service android:name=".files.services.FileObserverService"/>
+        
     </application>
 
 </manifest>

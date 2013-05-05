@@ -136,7 +136,7 @@ public class FileDisplayActivity extends SherlockFragmentActivity implements
     private static final int DIALOG_SSL_VALIDATOR = 5;
     private static final int DIALOG_CERT_NOT_SAVED = 6;
     private static final String DIALOG_CHANGELOG_TAG = "DIALOG_CHANGELOG";
-
+    
     
     private static final int ACTION_SELECT_CONTENT_FROM_APPS = 1;
     private static final int ACTION_SELECT_MULTIPLE_FILES = 2;
@@ -409,9 +409,17 @@ public class FileDisplayActivity extends SherlockFragmentActivity implements
             case android.R.id.home: {
                 if(mCurrentDir != null && mCurrentDir.getParentId() != 0){
                     onBackPressed(); 
+                    break;
                 }
-                break;
             }
+                case R.id.action_friend:{
+                    //Toast.makeText(getApplicationContext(), "Friend selec", Toast.LENGTH_SHORT).show();
+                    ////No syncing
+                    Intent friendsIntent = new Intent(this, TabLayoutActivity.class);
+                    startActivity(friendsIntent);
+                    break;
+                }
+            
             default:
                 retval = super.onOptionsItemSelected(item);
         }
@@ -838,7 +846,7 @@ public class FileDisplayActivity extends SherlockFragmentActivity implements
         Cursor cursor = managedQuery(uri, projection, null, null, null);
         if (cursor != null) {
             int column_index = cursor
-                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                   .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
             return cursor.getString(column_index);
         } 
