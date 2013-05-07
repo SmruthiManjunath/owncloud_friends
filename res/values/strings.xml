@@ -291,4 +291,6 @@ More information can be found on the Facebook website: https://developers.facebo
 	<string name="add_frnds">Add Friends</string>
 	<string name="pending_request">Pending Friend Request</string>
 	<string name="facebooksync">Facebook Sync allows you to import your Facebook friends from Facebook.</string>
+	<string name="addfriend">Enter Username</string>
+	<string name="add">Add Friend</string>
 </resources>

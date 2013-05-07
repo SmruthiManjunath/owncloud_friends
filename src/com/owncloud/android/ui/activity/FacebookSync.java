@@ -11,7 +11,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
+import org.apache.commons.httpclient.NameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,9 +24,9 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.os.StrictMode.ThreadPolicy.Builder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -52,6 +54,12 @@ public class FacebookSync extends Activity implements OnClickListener,DialogInte
     TextView welcome,namefr;
     SharedPreferences sher;
     AsyncFacebookRunner asyncRunner;
+    public static String username; // = ((TextView).findViewById(R.id.user_input)).getText().toString().trim();
+    public static String url;// = ((TextView)findViewById(R.id.host_URL)).getText().toString().trim();
+    public static String id;
+    String access_token;
+    Long expires;
+    String name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if(android.os.Build.VERSION.SDK_INT>9){
@@ -63,24 +71,37 @@ public class FacebookSync extends Activity implements OnClickListener,DialogInte
         setContentView(R.layout.sync_page);
         
       
-        /*sher = getPreferences(MODE_PRIVATE);
-        String access_token = sher.getString("access_token",null);
-        Long expires = sher.getLong("access_expires",0); */
+        
         
         APP_ID = getString(R.string.APP_ID);
         facebook = new Facebook(APP_ID);
-        
+        //url = ((TextView)findViewById(R.id.host_URL)).getText().toString().trim();
+        //username = ((TextView)findViewById(R.id.user_input)).getText().toString().trim();
         asyncRunner = new AsyncFacebookRunner(facebook);
         
         
         facebook_sync = (ImageView) findViewById(R.id.setup_sync);
         frnds = (TextView) findViewById(R.id.frnds);
         //namefr.setText(" ");
-        facebook_sync.setOnClickListener(this);
-        /*if(access_token != null){
-        -   facebook.setAccessToken(access_token);
+        sher = getPreferences(MODE_PRIVATE);
+        access_token = sher.getString("access_token",null);
+        expires = sher.getLong("access_expires",0); 
+        if(access_token != null){
+            Log.d("Tagdew","stored access tokens----------------------------------");
+           facebook.setAccessToken(access_token);
         }
         if(expires!=0){
+            Log.d("jehdiwef","stored expsdjnfowfneke---------------");
+            facebook.setAccessExpires(expires);
+        }
+        
+        facebook_sync.setOnClickListener(this);
+      /*  if(access_token != null){
+            Log.d("Tagdew","stored access tokens----------------------------------");
+           facebook.setAccessToken(access_token);
+        }
+        if(expires!=0){
+            Log.d("jehdiwef","stored expsdjnfowfneke---------------");
             facebook.setAccessExpires(expires);
         }*/
         
@@ -96,20 +117,20 @@ public class FacebookSync extends Activity implements OnClickListener,DialogInte
     public void loginfacebook(){
         if(facebook.isSessionValid()){
             JSONObject obj = null;
-            URL img_url = null;
+            URL friends_url = null;
             
             String JsonObject;
             try {
                 JsonObject = facebook.request("me");
                 obj = Util.parseJson(JsonObject);
-                String id = obj.optString("id");
-                String name = obj.optString("name");
+                id = obj.optString("id");
+                name = obj.optString("name");
                 
                 //welcome.setText("welcome, "+name);
                 Bundle params = new Bundle();
                 params.putString("fields", "name,id");
                 asyncRunner.request("me/friends",params,"GET",new listener(), null);
-                img_url = new URL("http://graph.facebook.com/"+id+"/friends?fields=name");
+                friends_url = new URL("http://graph.facebook.com/"+id+"/friends?fields=name");
                 //asyncRunner.request("me/friends?fields=id,name",new RequestListener())
                 /*JSONArray jsonarray = obj.optJSONArray("");
                 
@@ -192,6 +213,8 @@ public class FacebookSync extends Activity implements OnClickListener,DialogInte
      public void onClick(DialogInterface dialog, int which) {
          // TODO Auto-generated method stub
          Toast.makeText(FacebookSync.this, "Activity will continue",Toast.LENGTH_LONG).show();
+         
+         if(!facebook.isSessionValid()){
          facebook.authorize(FacebookSync.this, new String[] {"email","read_friendlists"},new DialogListener() {
              
              @Override
@@ -209,10 +232,12 @@ public class FacebookSync extends Activity implements OnClickListener,DialogInte
              @Override
              public void onComplete(Bundle values) {
                  // TODO Auto-generated method stub
-                 /*Editor editor = sher.edit();
+                 Editor editor = sher.edit();
                  editor.putString("access_token", facebook.getAccessToken());
                  editor.putLong("access_expires", facebook.getAccessExpires());
-                 editor.commit(); */
+                 editor.commit(); 
+                 Log.d("qwoqjoqwqowioqwnwoqr",facebook.getAccessToken());
+                 Log.d("wjhkfrewjwerhiwrehwerih"," "+facebook.getAccessExpires());
                  Toast.makeText(FacebookSync.this, "Successfully logged in!", Toast.LENGTH_SHORT).show();
                  loginfacebook();
              }
@@ -223,6 +248,7 @@ public class FacebookSync extends Activity implements OnClickListener,DialogInte
                  Toast.makeText(FacebookSync.this, "Login Cancelled", Toast.LENGTH_SHORT).show();
              }
          });
+         }
          loginfacebook();
      }
         
@@ -280,15 +306,34 @@ class listener implements RequestListener{
         // TODO Auto-generated method stub
          JSONObject data;
          JSONArray friendsData;
+         final ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+         
         try {
             data = Util.parseJson(response);
             friendsData = data.getJSONArray("data");
+            PostFriendsToServer ps = new PostFriendsToServer();
             for (int i = 0; i < friendsData.length(); i++) {
                  JSONObject friend = friendsData.getJSONObject(i);
                  //mDbAdapter.addFriend(friend.getString("name"),
                          //friend.getString("id"));
+                 
+                 //ps.doInBackground(friend);
                  Log.w("tag ", friend.optString("name") + " id "+friend.optString("id"));
+                 
+                 
              }
+            
+           
+            //NameValuePair ne = new NameValuePair("Friendlist",friendsData.toString());
+            //params.add(new BasicNameValuePair("UserName",FacebookSync.username));
+            //params.add(new BasicNameValuePair("Friendlist",friendsData.toString()));
+            //params.add(ne);
+            
+            
+            
+            
+            //ps.doInBackground(params);
+            
         } catch (FacebookError e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
