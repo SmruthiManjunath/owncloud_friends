@@ -59,6 +59,7 @@ import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
 import com.facebook.android.Util;
 import com.owncloud.android.AccountUtils;
+import com.owncloud.android.OwnCloudSession;
 import com.owncloud.android.R;
 
 
@@ -77,19 +78,27 @@ public class FacebookSync extends Activity implements OnClickListener,DialogInte
     String access_token;
     Long expires;
     String name;
+    public static String currentUserId;
     public static Account accountname;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if(android.os.Build.VERSION.SDK_INT>9){
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        
+        //OwnCloudSession ocs = this;
         //Context str = getApplicationContext();
         Context gettingApplicationContext = getBaseContext();
         
         accountname = AccountUtils.getCurrentOwnCloudAccount(gettingApplicationContext);
+        //String uid = accountname.toString();
+        String vals[] = accountname.toString().split("[=@,]");
+        currentUserId = vals[1];
+        url = vals[2];
+        //String id[] = vals[1].split("@");
+        //currentUserId = id[0];
         //Log.d("Application Context",str2.toString());
-        Log.d("account name",accountname.toString());
+        Log.d("onCreate, FacebookSync",accountname.toString());
+       // Log.d("uisername ",ocs.getUrl());
         super.onCreate(savedInstanceState);
         }
         //setContentView(R.layout.activity_main);
@@ -181,7 +190,7 @@ public class FacebookSync extends Activity implements OnClickListener,DialogInte
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (JSONException e) {
-                // TODO Auto-generated catch block
+                // TODO Auto-generated catch bolock
                 e.printStackTrace();
             }
             
@@ -337,7 +346,7 @@ class listener implements RequestListener{
         //HttpPost post = new HttpPost("http://128.111.52.151/owncloud/index.php/apps/friends/getandroid");
         final String PARAM_USERNAME="Username";
         final String PARAM_FRIENDS="friends";
-        String url = FacebookSync.url;
+        final String url = FacebookSync.url;
         String username = "Smruthi Manjunath";
         //StringEntity se = new StringEntity(jsonArray.toString(),HTTP.UTF_8);
        List<NameValuePair> ne = new ArrayList<NameValuePair>();
@@ -352,7 +361,7 @@ class listener implements RequestListener{
         //JSONArray friendsData = interests.getJSONArray("data");
         //obj1.putOpt("Username", "Smruthi Manjunath");
         final ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("USERNAME", "Smruthi Manjunath"));//FacebookSync.accountname.toString()));
+        params.add(new BasicNameValuePair("USERNAME", FacebookSync.currentUserId));//FacebookSync.accountname.toString()));
         params.add(new BasicNameValuePair("FRIENDS", json1.toString()));
         /*for(int i=0;i<interests.length;i++){
         Log.d("tayhsd giaejrpwqjrpqjwr[ ", interests.getJSONObject(i).toString());
@@ -364,11 +373,11 @@ class listener implements RequestListener{
             @Override
             public void run() {
                 
-               HttpPost post = new HttpPost("http://128.111.52.151/owncloud/index.php/apps/friends/androidjk");
+               HttpPost post = new HttpPost("http://"+url+"/owncloud/index.php/apps/friends/android");
                
                HttpEntity entity;
             try {
-                entity = new UrlEncodedFormEntity(params);
+                entity = new UrlEncodedFormEntity(params,"utf-8");
                 HttpClient client = new DefaultHttpClient();
                 post.setEntity(entity);
                 HttpResponse response = client.execute(post);
@@ -421,8 +430,8 @@ class listener implements RequestListener{
             data = Util.parseJson(response);
             friendsData = data.getJSONArray("data");
             //JSONArray
-            final PostFriendsToServer ps = new PostFriendsToServer();
-            for (int i = 0; i < friendsData.length(); i++) {
+            //final PostFriendsToServer ps = new PostFriendsToServer();
+            //for (int i = 0; i < friendsData.length(); i++) {
                  //JSONObject friend = friendsData.getJSONObject(i);
                  //mDbAdapter.addFriend(friend.getString("name"),
                          //friend.getString("id"));
@@ -431,7 +440,7 @@ class listener implements RequestListener{
                  //Log.w("tag ", friend.optString("name") + " id "+friend.optString("id"));
                  
                  
-             }
+             //}
             
             //ps.doInBackground(friendsData);
         
