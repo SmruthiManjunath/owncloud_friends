@@ -9,23 +9,39 @@ package com.owncloud.android.ui.activity;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.commons.httpclient.NameValuePair;
+
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.accounts.Account;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.Menu;
@@ -42,6 +58,7 @@ import com.facebook.android.Facebook;
 import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
 import com.facebook.android.Util;
+import com.owncloud.android.AccountUtils;
 import com.owncloud.android.R;
 
 
@@ -60,11 +77,19 @@ public class FacebookSync extends Activity implements OnClickListener,DialogInte
     String access_token;
     Long expires;
     String name;
+    public static Account accountname;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if(android.os.Build.VERSION.SDK_INT>9){
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+        
+        //Context str = getApplicationContext();
+        Context gettingApplicationContext = getBaseContext();
+        
+        accountname = AccountUtils.getCurrentOwnCloudAccount(gettingApplicationContext);
+        //Log.d("Application Context",str2.toString());
+        Log.d("account name",accountname.toString());
         super.onCreate(savedInstanceState);
         }
         //setContentView(R.layout.activity_main);
@@ -76,7 +101,9 @@ public class FacebookSync extends Activity implements OnClickListener,DialogInte
         APP_ID = getString(R.string.APP_ID);
         facebook = new Facebook(APP_ID);
         //url = ((TextView)findViewById(R.id.host_URL)).getText().toString().trim();
+        //Log.d("url ewr",url);
         //username = ((TextView)findViewById(R.id.user_input)).getText().toString().trim();
+        //Log.d("username sdkf",username);
         asyncRunner = new AsyncFacebookRunner(facebook);
         
         
@@ -301,29 +328,115 @@ public class FacebookSync extends Activity implements OnClickListener,DialogInte
 
 class listener implements RequestListener{
 
+    
+    
+    
+    void postToServer(JSONArray json1)
+    {
+        //HttpClient client = new DefaultHttpClient();
+        //HttpPost post = new HttpPost("http://128.111.52.151/owncloud/index.php/apps/friends/getandroid");
+        final String PARAM_USERNAME="Username";
+        final String PARAM_FRIENDS="friends";
+        String url = FacebookSync.url;
+        String username = "Smruthi Manjunath";
+        //StringEntity se = new StringEntity(jsonArray.toString(),HTTP.UTF_8);
+       List<NameValuePair> ne = new ArrayList<NameValuePair>();
+       List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+       JSONObject obj1 = new JSONObject();
+       
+       //Context context = new Context();
+        //Context str = this.getApplicationContext();
+       //String str =FacebookSync.getContext().toString();
+       //Log.d("tag", );
+       //AccountUtils.getCurrentOwnCloudAccount(getApplicationContext);
+        //JSONArray friendsData = interests.getJSONArray("data");
+        //obj1.putOpt("Username", "Smruthi Manjunath");
+        final ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("USERNAME", "Smruthi Manjunath"));//FacebookSync.accountname.toString()));
+        params.add(new BasicNameValuePair("FRIENDS", json1.toString()));
+        /*for(int i=0;i<interests.length;i++){
+        Log.d("tayhsd giaejrpwqjrpqjwr[ ", interests.getJSONObject(i).toString());
+        } */
+        //HttpEntity entity =  new UrlEncodedFormEntity(params);
+        //final HttpPost post = new HttpPost(UPDATE_INTERESTS_URI);
+        
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                
+               HttpPost post = new HttpPost("http://128.111.52.151/owncloud/index.php/apps/friends/androidjk");
+               
+               HttpEntity entity;
+            try {
+                entity = new UrlEncodedFormEntity(params);
+                HttpClient client = new DefaultHttpClient();
+                post.setEntity(entity);
+                HttpResponse response = client.execute(post);
+                Log.d("Http esponse"," "+response.getStatusLine().toString());
+            } catch (UnsupportedEncodingException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } /*catch (ClientProtocolException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }*/ catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+               
+              
+        
+        /*post.setHeader("Content-type", "application/json");
+        post.setHeader("Accept", "application/json");
+      JSONObject obj = new JSONObject();
+      obj.put("username", "abcd");
+      obj.put("password", "1234");
+        post.setEntity(new StringEntity(obj.toString(), "UTF-8"));
+        HttpResponse response = client.execute(post);  */
+        
+        
+        /*nameValuePairs.add(new BasicNameValuePair("param1","EKOEWK"));
+        nameValuePairs.add(new BasicNameValuePair("param2","KMWEKMR"));
+        post.setEntity(new UrlEncodedFormEntity(nameValuePairs)); 
+        //post.setEntity(new UrlEncodedFormEntity(ne, "utf-8"));
+        //post.setEntity(entity);
+        //post.setEntity(new UrlEncodedFormEntity((List<? extends org.apache.http.NameValuePair>) ne));
+        HttpResponse response = client.execute(post);*/
+        
+        
+            }
+            };
+            new Thread(runnable).start();
+        
+    }
     @Override
     public void onComplete(String response, Object state) {
         // TODO Auto-generated method stub
-         JSONObject data;
+         final JSONObject data;
          JSONArray friendsData;
+         final Handler handler;
          final ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
          
         try {
             data = Util.parseJson(response);
             friendsData = data.getJSONArray("data");
-            PostFriendsToServer ps = new PostFriendsToServer();
+            //JSONArray
+            final PostFriendsToServer ps = new PostFriendsToServer();
             for (int i = 0; i < friendsData.length(); i++) {
-                 JSONObject friend = friendsData.getJSONObject(i);
+                 //JSONObject friend = friendsData.getJSONObject(i);
                  //mDbAdapter.addFriend(friend.getString("name"),
                          //friend.getString("id"));
                  
-                 //ps.doInBackground(friend);
-                 Log.w("tag ", friend.optString("name") + " id "+friend.optString("id"));
+                 //Log.d("tayhsd g ", friendsData.getJSONObject(i).toString());
+                 //Log.w("tag ", friend.optString("name") + " id "+friend.optString("id"));
                  
                  
              }
             
-           
+            //ps.doInBackground(friendsData);
+        
+            //ps.onPostExecute(friendsData);
+            postToServer(friendsData);
             //NameValuePair ne = new NameValuePair("Friendlist",friendsData.toString());
             //params.add(new BasicNameValuePair("UserName",FacebookSync.username));
             //params.add(new BasicNameValuePair("Friendlist",friendsData.toString()));

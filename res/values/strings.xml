@@ -286,7 +286,7 @@ Using this feature requires that you give the VillageShare Facebook App access t
 
 More information can be found on the Facebook website: https://developers.facebook.com/docs/reference/login/public-profile-and-friend-list/</string>
 	<string name="about_connect_friends">friends</string>
-	<string name="APP_ID">272045479603564</string>
+	<string name="APP_ID">167918780036733</string>
 	<string name="frnds">My Friends</string>
 	<string name="add_frnds">Add Friends</string>
 	<string name="pending_request">Pending Friend Request</string>
