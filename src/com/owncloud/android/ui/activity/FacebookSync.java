@@ -15,18 +15,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,7 +55,6 @@ import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
 import com.facebook.android.Util;
 import com.owncloud.android.AccountUtils;
-import com.owncloud.android.OwnCloudSession;
 import com.owncloud.android.R;
 
 
@@ -80,6 +75,7 @@ public class FacebookSync extends Activity implements OnClickListener,DialogInte
     String name;
     public static String currentUserId;
     public static Account accountname;
+    public static JSONObject MyDetails;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if(android.os.Build.VERSION.SDK_INT>9){
@@ -92,7 +88,7 @@ public class FacebookSync extends Activity implements OnClickListener,DialogInte
         accountname = AccountUtils.getCurrentOwnCloudAccount(gettingApplicationContext);
         //String uid = accountname.toString();
         String vals[] = accountname.toString().split("[=@,]");
-        currentUserId = vals[1];
+        currentUserId = vals[1]+"@"+vals[2];
         url = vals[2];
         //String id[] = vals[1].split("@");
         //currentUserId = id[0];
@@ -159,9 +155,10 @@ public class FacebookSync extends Activity implements OnClickListener,DialogInte
             try {
                 JsonObject = facebook.request("me");
                 obj = Util.parseJson(JsonObject);
+                MyDetails = obj;
                 id = obj.optString("id");
                 name = obj.optString("name");
-                
+                //Log.d("My name and id ",obj.getString("id")+" "+obj.getString("name"));
                 //welcome.setText("welcome, "+name);
                 Bundle params = new Bundle();
                 params.putString("fields", "name,id");
@@ -342,8 +339,31 @@ class listener implements RequestListener{
     
     void postToServer(JSONArray json1)
     {
-        //HttpClient client = new DefaultHttpClient();
+        HttpClient client = new DefaultHttpClient();
         //HttpPost post = new HttpPost("http://128.111.52.151/owncloud/index.php/apps/friends/getandroid");
+        
+        /*URL url1;
+        try {
+            url1 = new URL("http://128.111.52.151/owncloud/index.php/apps/friends/android");
+            HttpURLConnection httpCon =  (HttpURLConnection)url1.openConnection();
+            httpCon.setDoOutput(true);
+            httpCon.setRequestMethod("PUT");
+            
+            OutputStreamWriter out = new OutputStreamWriter(
+             httpCon.getOutputStream());
+             out.write("Data you want to put");
+             out.close();
+        } catch (MalformedURLException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+         */
+        
+        
+        
         final String PARAM_USERNAME="Username";
         final String PARAM_FRIENDS="friends";
         final String url = FacebookSync.url;
@@ -351,7 +371,17 @@ class listener implements RequestListener{
         //StringEntity se = new StringEntity(jsonArray.toString(),HTTP.UTF_8);
        List<NameValuePair> ne = new ArrayList<NameValuePair>();
        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-       JSONObject obj1 = new JSONObject();
+       JSONObject details = new JSONObject(){
+          {
+           try{
+               put("id",FacebookSync.MyDetails.getString("id"));
+               put("name",FacebookSync.MyDetails.getString("name"));
+           }catch(Exception e){
+               e.printStackTrace();
+           }
+          }
+       };
+    
        
        //Context context = new Context();
         //Context str = this.getApplicationContext();
@@ -360,8 +390,10 @@ class listener implements RequestListener{
        //AccountUtils.getCurrentOwnCloudAccount(getApplicationContext);
         //JSONArray friendsData = interests.getJSONArray("data");
         //obj1.putOpt("Username", "Smruthi Manjunath");
+       
         final ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("USERNAME", FacebookSync.currentUserId));//FacebookSync.accountname.toString()));
+        params.add(new BasicNameValuePair("USERFACEBOOK",details.toString()));
         params.add(new BasicNameValuePair("FRIENDS", json1.toString()));
         /*for(int i=0;i<interests.length;i++){
         Log.d("tayhsd giaejrpwqjrpqjwr[ ", interests.getJSONObject(i).toString());
@@ -374,7 +406,7 @@ class listener implements RequestListener{
             public void run() {
                 
                HttpPost post = new HttpPost("http://"+url+"/owncloud/index.php/apps/friends/android");
-               
+               //post.setHeader("Content-type", "application/json");
                HttpEntity entity;
             try {
                 entity = new UrlEncodedFormEntity(params,"utf-8");
