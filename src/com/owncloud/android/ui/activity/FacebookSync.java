@@ -413,7 +413,8 @@ class listener implements RequestListener{
                 HttpClient client = new DefaultHttpClient();
                 post.setEntity(entity);
                 HttpResponse response = client.execute(post);
-                Log.d("Http esponse"," "+response.getStatusLine().toString());
+                //Log.d("Http esponse"," "+response.getStatusLine().toString());
+                Log.d("Http esponse"," "+response.toString());
             } catch (UnsupportedEncodingException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
