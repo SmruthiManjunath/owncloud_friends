@@ -293,4 +293,6 @@ More information can be found on the Facebook website: https://developers.facebo
 	<string name="facebooksync">Facebook Sync allows you to import your Facebook friends from Facebook.</string>
 	<string name="addfriend">Enter Username</string>
 	<string name="add">Add Friend</string>
+	<string name="Accept">Accept</string>
+	<string name="Remove">Remove</string>
 </resources>

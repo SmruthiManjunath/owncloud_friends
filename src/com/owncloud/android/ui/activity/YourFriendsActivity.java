@@ -21,6 +21,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import android.accounts.Account;
@@ -28,6 +29,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -64,6 +66,8 @@ public class YourFriendsActivity extends Activity{
         params.add(new BasicNameValuePair("CURRENTUSER", username+"@"+url));
         Log.d("sdn object ",params.toString());
         
+        
+        //getTabWidget().getChildAt(1).setOnClickListener(this);
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -82,6 +86,10 @@ public class YourFriendsActivity extends Activity{
                    //adapter.add(val);
                     //Toast.makeText(YourFriendsActivity.this,"Sorry unable to add friend, check internet connection and try after sometime", Toast.LENGTH_LONG).show();
                    Log.d("Return","Successful");
+                   HttpEntity entityr = response.getEntity();
+                   Log.d("response entit wqew",entityr.toString());
+                   String jsonentity = EntityUtils.toString(entityr);
+                   Log.d("response tewo aewrwq",jsonentity);
                 }
                 else
                 {

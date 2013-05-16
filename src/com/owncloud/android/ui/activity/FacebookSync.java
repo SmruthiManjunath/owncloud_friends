@@ -81,23 +81,15 @@ public class FacebookSync extends Activity implements OnClickListener,DialogInte
         if(android.os.Build.VERSION.SDK_INT>9){
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        //OwnCloudSession ocs = this;
-        //Context str = getApplicationContext();
         Context gettingApplicationContext = getBaseContext();
         
         accountname = AccountUtils.getCurrentOwnCloudAccount(gettingApplicationContext);
-        //String uid = accountname.toString();
         String vals[] = accountname.toString().split("[=@,]");
         currentUserId = vals[1]+"@"+vals[2];
         url = vals[2];
-        //String id[] = vals[1].split("@");
-        //currentUserId = id[0];
-        //Log.d("Application Context",str2.toString());
         Log.d("onCreate, FacebookSync",accountname.toString());
-       // Log.d("uisername ",ocs.getUrl());
         super.onCreate(savedInstanceState);
         }
-        //setContentView(R.layout.activity_main);
         setContentView(R.layout.sync_page);
         
       
@@ -105,16 +97,11 @@ public class FacebookSync extends Activity implements OnClickListener,DialogInte
         
         APP_ID = getString(R.string.APP_ID);
         facebook = new Facebook(APP_ID);
-        //url = ((TextView)findViewById(R.id.host_URL)).getText().toString().trim();
-        //Log.d("url ewr",url);
-        //username = ((TextView)findViewById(R.id.user_input)).getText().toString().trim();
-        //Log.d("username sdkf",username);
         asyncRunner = new AsyncFacebookRunner(facebook);
         
         
         facebook_sync = (ImageView) findViewById(R.id.setup_sync);
         frnds = (TextView) findViewById(R.id.frnds);
-        //namefr.setText(" ");
         sher = getPreferences(MODE_PRIVATE);
         access_token = sher.getString("access_token",null);
         expires = sher.getLong("access_expires",0); 
@@ -128,21 +115,6 @@ public class FacebookSync extends Activity implements OnClickListener,DialogInte
         }
         
         facebook_sync.setOnClickListener(this);
-      /*  if(access_token != null){
-            Log.d("Tagdew","stored access tokens----------------------------------");
-           facebook.setAccessToken(access_token);
-        }
-        if(expires!=0){
-            Log.d("jehdiwef","stored expsdjnfowfneke---------------");
-            facebook.setAccessExpires(expires);
-        }*/
-        
-        //SyncDialog d = new SyncDialog();
-        
-        
-        
-        //d.onCreateDialog();
-        //loginfacebook();
     }
     
     @SuppressWarnings("deprecation")
@@ -158,24 +130,10 @@ public class FacebookSync extends Activity implements OnClickListener,DialogInte
                 MyDetails = obj;
                 id = obj.optString("id");
                 name = obj.optString("name");
-                //Log.d("My name and id ",obj.getString("id")+" "+obj.getString("name"));
-                //welcome.setText("welcome, "+name);
                 Bundle params = new Bundle();
                 params.putString("fields", "name,id");
                 asyncRunner.request("me/friends",params,"GET",new listener(), null);
                 friends_url = new URL("http://graph.facebook.com/"+id+"/friends?fields=name");
-                //asyncRunner.request("me/friends?fields=id,name",new RequestListener())
-                /*JSONArray jsonarray = obj.optJSONArray("");
-                
-                for(int i=0;i<jsonarray.length();i++)
-                {
-                    JSONObject obj1 = jsonarray.getJSONObject(i);
-                    
-                    String namef = obj1.getString("name");
-                    //namefr.setText("friendae, "+namef);
-                Log.w("frnd "+namef, namef);
-                }*/
-                //facebook_sync.setImageResource(R.drawable.com_facebook_logo);
                 
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
