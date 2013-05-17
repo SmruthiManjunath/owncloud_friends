@@ -4,15 +4,14 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
      >
-    
-    <TextView
+ <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         
-        android:id = "@+id/acceptfrndtxt"/>
+        android:id = "@+id/yourfrndtxt"/>
 
     <Button
-        android:id="@+id/removebtn"
+        android:id="@+id/removebtn1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -20,16 +19,4 @@
         
         android:text="@string/Remove" />
 
-    <Button
-        android:id="@+id/acceptbtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="14dp"
-        android:layout_toLeftOf="@+id/removebtn"
-        android:clickable="true"
-        android:onClick="handler1"
-        
-        android:text="@string/Accept" />
-
 </RelativeLayout>
-    

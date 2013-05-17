@@ -33,16 +33,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.owncloud.android.AccountUtils;
 import com.owncloud.android.R;
-import com.owncloud.android.ui.activity.AcceptFriendRequestsActivity.friendArrayAdapter.friendRowholder;
 
 public class AcceptFriendRequestsActivity extends Activity {
    
@@ -79,7 +77,7 @@ public class AcceptFriendRequestsActivity extends Activity {
         url = vals[2];
         JSONObject obj1 = new JSONObject();
         final ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("CURRENTUSER", username+"@"+url));
+        params.add(new BasicNameValuePair("CURRENTUSER", username));
         Log.d("sdnsehriwuaehrowa object ",params.toString());
 
         Runnable runnable = new Runnable() {
@@ -100,9 +98,9 @@ public class AcceptFriendRequestsActivity extends Activity {
                     JSONObject obj = new JSONObject(jsonentity);
                     JSONObject obj1 = (JSONObject) obj.get("data");
                     Log.d("response tewo aewrwqer***********************************"," "+jsonentity);
-                    //Log.d("response tewo aewrwq"," "+obj1.get("sentFriendshipRequests"));
+                    Log.d("response tewo aewrwq"," "+obj1.get("receivedFriendshipRequests"));
                    
-                    jary = obj1.getJSONArray("sentFriendshipRequests");
+                    jary = obj1.getJSONArray("receivedFriendshipRequests");
                     //sentFriendshipRequestArray.addAll(jary);
                     for(int i = 0; i<jary.length();i++){//sentFriendshipRequestArray.size();i++)
                         //JSONObject jobj = jary.getJSONObject(i);
@@ -186,7 +184,7 @@ public class AcceptFriendRequestsActivity extends Activity {
                    
                    
                    final ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-                   params.add(new BasicNameValuePair("CURRENTUSER", username+"@"+url));
+                   params.add(new BasicNameValuePair("CURRENTUSER", username));
                    params.add(new BasicNameValuePair("ACCEPTFRIEND",str));
                 try {
                     entity = new UrlEncodedFormEntity(params,"utf-8");
@@ -196,7 +194,19 @@ public class AcceptFriendRequestsActivity extends Activity {
                     Log.d("Http esponse"," "+response.getStatusLine().toString());
                     //Log.d("Http esponse"," "+response.toString());
                     if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
-                        adapter.remove(position+" ");
+                        
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                                String s = Integer.toString(position);
+                                adapter.remove(s);
+                                //notifyDataSetChanged();
+                                Log.d("rem ",str+" ");
+                                
+                       //stuff that updates ui
+
+                           }
+                       });
+                        
                         }
                         /*runOnUiThread(new Runnable() {
                             public void run() {
@@ -254,18 +264,17 @@ public class AcceptFriendRequestsActivity extends Activity {
         public View getView(int position, View convertView,ViewGroup parent){
             View row = convertView;
             //friendRowholder holder = null;
-            Log.d("getView ","here in getv");
+            //Log.d("getView ","here in getv");
             LayoutInflater inflater = ((Activity)context).getLayoutInflater();
             row = inflater.inflate(layoutResourceId,parent,false);
-            Log.d("getview","in getvi");
+            //Log.d("getview","in getvi");
             holder = new friendRowholder();
             holder.frndPos = Objects.get(position);
-            Log.d("getView","after holder creation");
-            holder.acceptfrndButton = (ImageButton)findViewById(R.id.acceptbtn);
+            //Log.d("getView","after holder creation");
+            holder.acceptfrndButton = (Button)findViewById(R.id.acceptbtn);
             //holder.acceptfrndButton.setOnClickListener(handler1);
-            holder.removefrndButton = (ImageButton)findViewById(R.id.removebtn);
+            holder.removefrndButton = (Button)findViewById(R.id.removebtn);
             holder.frndtxt = (TextView)row.findViewById(R.id.acceptfrndtxt);
-            //display();
             
             row.setTag(holder);
             //Log.d("jarey",jary.toString());
@@ -368,8 +377,8 @@ public class AcceptFriendRequestsActivity extends Activity {
        public class friendRowholder{
            String frndPos;
            TextView frndtxt;
-           ImageButton acceptfrndButton;
-           ImageButton removefrndButton;
+           Button acceptfrndButton;
+           Button removefrndButton;
            
            
        }

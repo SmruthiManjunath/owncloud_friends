@@ -88,7 +88,7 @@ public class AddFriendsActivity extends Activity implements OnClickListener{
             final String url = vals[2];
             JSONObject obj1 = new JSONObject();
             final ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("CURRENTUSER", username+"@"+url));
+            params.add(new BasicNameValuePair("CURRENTUSER", username));
             params.add(new BasicNameValuePair("REQUESTEDFRIEND",val));
             Log.d("sdn object ",params.toString());
   
