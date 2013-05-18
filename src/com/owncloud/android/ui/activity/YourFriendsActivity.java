@@ -50,6 +50,7 @@ public class YourFriendsActivity extends Activity{
     JSONArray jary;
     String username;
     String url;
+    String TAG="YourFriedsActivty";
     @Override
     public void onCreate(Bundle SavedInstanceState){
         
@@ -57,11 +58,6 @@ public class YourFriendsActivity extends Activity{
         setContentView(R.layout.your_friendstab);
         
         listView = (ListView)findViewById(R.id.yourlistview);
-        //listView = (ListView)findViewById(R.id.listViewRequests);
-        //tv = (TextView)findViewById(R.id.tv1);
-        //Button addBtn = Button);
-        //setContentView(addBtn);
-        //arrayAdapter = new ArrayAdapter<String>(AddFriendsActivity.this,R.id.tv1,friendNames);
         friendNames = new ArrayList<String>();
         adapter = new friendlistArrayAdapter(this,R.layout.removeyourfriends,friendNames);
         listView.setAdapter(adapter);
@@ -75,8 +71,6 @@ public class YourFriendsActivity extends Activity{
         params.add(new BasicNameValuePair("CURRENTUSER", username));
         Log.d("sdn object ",params.toString());
         
-        
-        //getTabWidget().getChildAt(1).setOnClickListener(this);
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -89,31 +83,33 @@ public class YourFriendsActivity extends Activity{
                 HttpClient client = new DefaultHttpClient();
                 post.setEntity(entity);
                 HttpResponse response = client.execute(post);
-                Log.d("Http esponse"," "+response.getStatusLine().toString());
-                //Log.d("Http esponse"," "+response.toString());
+                Log.d(TAG,"Fetching friend list from server");
+                
                 if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
-                   //adapter.add(val);
-                    //Toast.makeText(YourFriendsActivity.this,"Sorry unable to add friend, check internet connection and try after sometime", Toast.LENGTH_LONG).show();
                     HttpEntity entityresponse = response.getEntity();
                     String jsonentity = EntityUtils.toString(entityresponse);
                     JSONObject obj = new JSONObject(jsonentity);
                     JSONObject obj1 = (JSONObject) obj.get("data");
-                    Log.d("response tewo aewrwqer***********************************"," "+jsonentity);
-                    Log.d("response tewo aewrwq"," "+obj1.get("friendships"));
                     
                     jary = obj1.getJSONArray("friendships");
-                    //sentFriendshipRequestArray.addAll(jary);
                     friendNames.clear();
-                    for(int i = 0; i<jary.length();i++){//sentFriendshipRequestArray.size();i++)
-                        //JSONObject jobj = jary.getJSONObject(i);
-                       //Log.d("valu f",jary.getString(i));//Log.d("value f ",sentFriendshipRequestArray.get(i));
+                    for(int i = 0; i<jary.length();i++){
                         friendNames.add(jary.getString(i));
-                    }
-                    if(jary.length() == 0){
-                        TextView frndTxt = (TextView)findViewById(R.id.yourfrndtxt);
-                        frndTxt.setText("You have no friends");
+                        Log.d("TAG",jary.getString(i));
                     }
                     //display();
+                    if(jary.length() == 0){
+                        //TextView frndTxt = (TextView)findViewById(R.id.yourfrndtxt);
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                         TextView frndTxt = (TextView)findViewById(R.id.defaultyourfriends);
+                         //receivedFriendshipRequestArray.add("Yiu have no pending friend requests ");
+                         frndTxt.setText("You have no friends");
+                            }
+                        }); 
+                        //frndTxt.setText("You have no friends");
+                    }
+                     
                 }
                 else
                 {

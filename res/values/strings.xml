@@ -295,4 +295,5 @@ More information can be found on the Facebook website: https://developers.facebo
 	<string name="add">Add Friend</string>
 	<string name="Accept">Accept</string>
 	<string name="Remove">Remove</string>
+	<string name="about_refresh_friends">Refresh</string>
 </resources>

@@ -38,6 +38,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.owncloud.android.AccountUtils;
 import com.owncloud.android.R;
@@ -46,12 +47,12 @@ public class AcceptFriendRequestsActivity extends Activity {
    
     Account accountname;
     ListView listView1;
-    //TextView frndtxt;
     String username;
     String url;
     friendArrayAdapter friendadapter;
     ArrayList<String> receivedFriendshipRequestArray;
     JSONArray jary1;
+    String TAG="AcceptFriendRequestsActivity";
     @Override
     public void onCreate(Bundle SavedInstanceState){
         
@@ -59,17 +60,10 @@ public class AcceptFriendRequestsActivity extends Activity {
         setContentView(R.layout.accept_friendstab);
         
         listView1 = (ListView)findViewById(R.id.listViewAccept);
-        //listView = (ListView)findViewById(R.id.listViewRequests);
-        //tv = (TextView)findViewById(R.id.tv1);
-        //Button addBtn = Button);
-        //setContentView(addBtn);
-        //arrayAdapter = new ArrayAdapter<String>(AddFriendsActivity.this,R.id.tv1,friendNames);
         receivedFriendshipRequestArray = new ArrayList<String>();
         friendadapter = new friendArrayAdapter(this,R.layout.listacceptremove,receivedFriendshipRequestArray);
         Log.d("oncreate ","in function adapte");
         listView1.setAdapter(friendadapter);
-        //Accept.setClickable(true);
-        //frndtxt = (TextView)findViewById(R.id.)
         Log.d("accept frd","setclickadn");
         
         accountname = AccountUtils.getCurrentOwnCloudAccount(getBaseContext());
@@ -92,35 +86,49 @@ public class AcceptFriendRequestsActivity extends Activity {
                 post.setEntity(entity);
                 HttpResponse response = client.execute(post);
                 Log.d("Http esponse"," "+response.getStatusLine().toString());
-                //Log.d("Http esponse"," "+response.toString());
                 if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
                     HttpEntity entityresponse = response.getEntity();
                     String jsonentity = EntityUtils.toString(entityresponse);
                     JSONObject obj = new JSONObject(jsonentity);
                     JSONObject obj1 = (JSONObject) obj.get("data");
-                    //Log.d("response tewo aewrwqer***********************************"," "+jsonentity);
                     Log.d("response tewo aewrwq"," "+obj1.get("receivedFriendshipRequests"));
                    
                     jary1 = obj1.getJSONArray("receivedFriendshipRequests");
-                    //sentFriendshipRequestArray.addAll(jary);
-                    //sentFriendshipRequestArray.clear();
                     receivedFriendshipRequestArray.clear();
-                    for(int i = 0; i<jary1.length();i++){//sentFriendshipRequestArray.size();i++)
-                        //JSONObject jobj = jary.getJSONObject(i);
-                       Log.d("valu f",jary1.getString(i));//Log.d("value f ",sentFriendshipRequestArray.get(i));
+                    Log.d(TAG,"Finished http request");
+                    for(int i = 0; i<jary1.length();i++){
+                       Log.d("valu f",jary1.getString(i));
                         receivedFriendshipRequestArray.add(jary1.getString(i));
                         
-                        //display(jary.getString(i));
+                        
+                    }
+                   if(jary1.length()==0){
+                       
+                       runOnUiThread(new Runnable() {
+                           public void run() {
+                        TextView frndTxt = (TextView)findViewById(R.id.defaultaccept);
+                        //receivedFriendshipRequestArray.add("Yiu have no pending friend requests ");
+                        frndTxt.setText("You have no pending friend requests");
+                           }
+                       }); 
                     }
                     
-                    
-                    display();
+                    //display();
                         
                     //adapter.
                     
                 }
                 else
                 {
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            //listView.setAdapter(adapter);
+                            Toast.makeText(AcceptFriendRequestsActivity.this,"Sorry unable to add friend, check internet connection and try after sometime", Toast.LENGTH_LONG).show();
+                            //holder.frndtxt.setText(sentFriendshipRequestArray(i));
+                            //Log.d("qiwehjqwpe "," in display");
+
+                       }
+                   }); 
                     //Toast.makeText(AddFriendsActivity.this,"Sorry unable to add friend, check internet connection and try after sometime", Toast.LENGTH_LONG).show();
                    Log.d("onCreate ","Not able to display");
                 }
@@ -344,6 +352,7 @@ public class AcceptFriendRequestsActivity extends Activity {
            //i++;
             return row;
             } else{
+                holder.frndtxt.setText("You have no pending friend requests");
                 return null;
             }
             //Log.d("getView","after holder creation");

@@ -7,29 +7,33 @@ package com.owncloud.android.ui.activity;
 
 
 
+import android.app.Activity;
+import android.app.LocalActivityManager;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TabHost;
 
-import com.actionbarsherlock.ActionBarSherlock;
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.owncloud.android.R;
 
 public class TabLayoutActivity extends TabActivity{
     
     TabHost mTabHost;
-   
+    String TAG="TabLayoutActivty";
     @Override
     public void onCreate(Bundle SavedInstanceState){
         super.onCreate(SavedInstanceState);
         setContentView(R.layout.friend_tab);
         
-        
+        //Creating tabs and associating activities
         mTabHost = getTabHost();
         TabHost.TabSpec spec1,spec2,spec3,spec4;
         Intent intent;
+        
+        
+        //intent = new Intent(this,YourFriendsActivity.class);
         intent = new Intent(this,YourFriendsActivity.class);
         spec1 = mTabHost.newTabSpec("YourFriends")
                          .setIndicator("Your Friends")
@@ -54,6 +58,7 @@ public class TabLayoutActivity extends TabActivity{
                          .setContent(intent);
         mTabHost.addTab(spec4);
         
+       //Adding Refresh and enabling back button
         android.app.ActionBar ab = getActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setDisplayShowTitleEnabled(false);
@@ -64,6 +69,27 @@ public class TabLayoutActivity extends TabActivity{
         
         
     }
+    
+    void callforresumeStart(){
+        LocalActivityManager manager = getLocalActivityManager();
+        String currentTag = mTabHost.getCurrentTabTag();
+        Log.d(TAG+"jeewjqqjpqejpq ",currentTag);
+        Class<? extends Activity> currentClass = manager.getCurrentActivity().getClass();
+        manager.destroyActivity(currentTag, true);
+        manager.startActivity(currentTag, new Intent(this, currentClass)); 
+    }
+    @Override
+    public void onStart(){
+        super.onStart();
+        callforresumeStart();
+        
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+        callforresumeStart();
+        Log.d("onResume","Here");
+    }
     public void onBackPressed(){
         finish();
     }
@@ -71,7 +97,7 @@ public class TabLayoutActivity extends TabActivity{
    public boolean onCreateOptionsMenu(android.view.Menu menu){
        
        android.view.MenuInflater inflater = getMenuInflater();
-       inflater.inflate(R.menu.main_menu, menu);
+       inflater.inflate(R.menu.friend_menu, menu);
        
        //patchHiddenAccents(menu);
     return true;
@@ -84,12 +110,11 @@ public class TabLayoutActivity extends TabActivity{
       
       boolean retval = true;
       switch (item.getItemId()) {
-          case R.id.action_sync_account: {
+          case R.id.action_refresh: {
               
-              
-              //EditNameDialog dialog = EditNameDialog.newInstance(getString(R.string.uploader_info_dirname), "", this);
-              //dialog.show(getSupportFragmentManager(), "createdirdialog");
-              //break;
+              callforresumeStart();
+              Log.d("reusme ","pressed buttons");
+              break;
           }
           case android.R.id.home: {
               onBackPressed();

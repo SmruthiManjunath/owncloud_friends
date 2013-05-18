@@ -20,10 +20,13 @@
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@id/btn1"
         android:hint="@string/addfriend"/>
-     
+     	<TextView android:layout_width="wrap_content"
+   	    	  android:layout_height="wrap_content"
+   	    	  android:id = "@+id/defaultadd"
+   	    	  android:layout_below="@id/btn1"/>
 	<ListView 
     android:id="@+id/listview"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_below="@id/btn1" /> 
+    android:layout_below="@id/defaultadd" /> 
 </RelativeLayout>
