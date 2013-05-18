@@ -407,7 +407,10 @@ public class FileDisplayActivity extends SherlockFragmentActivity implements
                 break;
             }
             case android.R.id.home: {
+                Log.d(TAG,"going back one step");
                 if(mCurrentDir != null && mCurrentDir.getParentId() != 0){
+                   
+                    
                     onBackPressed(); 
                     break;
                 }

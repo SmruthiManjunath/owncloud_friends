@@ -49,18 +49,55 @@ public class TabLayoutActivity extends TabActivity{
         mTabHost.addTab(spec3);
         
         intent = new Intent(this,FacebookSync.class);
-        spec4 = mTabHost.newTabSpec("FriendsActivity")
-                         .setIndicator("Friends Activity")
+        spec4 = mTabHost.newTabSpec("Facebook")
+                         .setIndicator("Facebook")
                          .setContent(intent);
         mTabHost.addTab(spec4);
         
-       /*ActionBar ab = getSupportActionBar();
+        android.app.ActionBar ab = getActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
-        */
-        
+        ab.setDisplayShowTitleEnabled(false);
+        ab.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        setProgressBarIndeterminateVisibility(false);
         
        
         
         
     }
+    public void onBackPressed(){
+        finish();
+    }
+   @Override
+   public boolean onCreateOptionsMenu(android.view.Menu menu){
+       
+       android.view.MenuInflater inflater = getMenuInflater();
+       inflater.inflate(R.menu.main_menu, menu);
+       
+       //patchHiddenAccents(menu);
+    return true;
+       
+   }
+   
+  @Override
+  public boolean onOptionsItemSelected(android.view.MenuItem item){
+      
+      
+      boolean retval = true;
+      switch (item.getItemId()) {
+          case R.id.action_sync_account: {
+              
+              
+              //EditNameDialog dialog = EditNameDialog.newInstance(getString(R.string.uploader_info_dirname), "", this);
+              //dialog.show(getSupportFragmentManager(), "createdirdialog");
+              //break;
+          }
+          case android.R.id.home: {
+              onBackPressed();
+              break;
+          }
+   
+      
+  }
+      return retval;
+  }
 }
