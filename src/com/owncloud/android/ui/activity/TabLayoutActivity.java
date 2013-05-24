@@ -87,6 +87,7 @@ public class TabLayoutActivity extends TabActivity{
     @Override
     public void onResume(){
         super.onResume();
+        Log.d("onResume","before calling onresumestart");
         callforresumeStart();
         Log.d("onResume","Here");
     }
@@ -112,7 +113,8 @@ public class TabLayoutActivity extends TabActivity{
       switch (item.getItemId()) {
           case R.id.action_refresh: {
               
-              callforresumeStart();
+              //callforresumeStart();
+              onResume();
               Log.d("reusme ","pressed buttons");
               break;
           }

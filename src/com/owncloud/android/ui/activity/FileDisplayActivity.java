@@ -20,12 +20,18 @@
 package com.owncloud.android.ui.activity;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
 
 import android.accounts.Account;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -54,8 +60,14 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,6 +79,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 import com.owncloud.android.AccountUtils;
+import com.owncloud.android.R;
 import com.owncloud.android.authenticator.AccountAuthenticator;
 import com.owncloud.android.datamodel.DataStorageManager;
 import com.owncloud.android.datamodel.FileDataStorageManager;
@@ -80,15 +93,15 @@ import com.owncloud.android.network.OwnCloudClientUtils;
 import com.owncloud.android.operations.OnRemoteOperationListener;
 import com.owncloud.android.operations.RemoteOperation;
 import com.owncloud.android.operations.RemoteOperationResult;
+import com.owncloud.android.operations.RemoteOperationResult.ResultCode;
 import com.owncloud.android.operations.RemoveFileOperation;
 import com.owncloud.android.operations.RenameFileOperation;
 import com.owncloud.android.operations.SynchronizeFileOperation;
-import com.owncloud.android.operations.RemoteOperationResult.ResultCode;
 import com.owncloud.android.syncadapter.FileSyncService;
 import com.owncloud.android.ui.dialog.ChangelogDialog;
 import com.owncloud.android.ui.dialog.EditNameDialog;
-import com.owncloud.android.ui.dialog.SslValidatorDialog;
 import com.owncloud.android.ui.dialog.EditNameDialog.EditNameDialogListener;
+import com.owncloud.android.ui.dialog.SslValidatorDialog;
 import com.owncloud.android.ui.dialog.SslValidatorDialog.OnSslValidatorListener;
 import com.owncloud.android.ui.fragment.FileDetailFragment;
 import com.owncloud.android.ui.fragment.FileFragment;
@@ -97,7 +110,6 @@ import com.owncloud.android.ui.preview.PreviewImageActivity;
 import com.owncloud.android.ui.preview.PreviewImageFragment;
 import com.owncloud.android.ui.preview.PreviewMediaFragment;
 
-import com.owncloud.android.R;
 import eu.alefzero.webdav.WebdavClient;
 
 /**
@@ -113,7 +125,7 @@ public class FileDisplayActivity extends SherlockFragmentActivity implements
     private ArrayAdapter<String> mDirectories;
     private OCFile mCurrentDir = null;
     private OCFile mCurrentFile = null;
-
+    ArrayAdapter<String> adapter;
     private DataStorageManager mStorageManager;
     private SyncBroadcastReceiver mSyncBroadcastReceiver;
     private UploadFinishReceiver mUploadFinishReceiver;
@@ -147,8 +159,8 @@ public class FileDisplayActivity extends SherlockFragmentActivity implements
     
     private OCFile mWaitingToPreview;
     private Handler mHandler;
-
-    
+    //AutoCompleteTextView textview;
+    public static ArrayList<String> sharefriendList = new ArrayList<String>();
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d(getClass().toString(), "onCreate() start");
@@ -247,7 +259,91 @@ public class FileDisplayActivity extends SherlockFragmentActivity implements
         Log.d(getClass().toString(), "onCreate() end");
     }
 
+    /**
+     * 
+     * Village share
+     * 
+     */
+   
     
+    public void shareHandler(View v){
+        Log.d(TAG," got clicked to share");
+        //Thread t1;
+        Account accountname = AccountUtils.getCurrentOwnCloudAccount(getBaseContext());
+        String vals[] = accountname.toString().split("[@=,]");
+        String username = vals[1];
+        final String url = vals[2];
+        JSONObject obj1 = new JSONObject();
+        final ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("CURRENTUSER", username));
+        //textview = (AutoCompleteTextView)v.findViewById(R.id.auto_complete);
+        //sharefriendlistArrayAdapter adapter;
+        //textview = new AutoCompleteTextView(this);
+        MultiAutoCompleteTextView textview = new MultiAutoCompleteTextView(this);
+        LinearLayout ll = (LinearLayout)findViewById(R.id.ListItemLayout);
+        LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        ll.addView(textview, lp);
+        ImageView anchor = (ImageView)v.findViewById(R.id.share);
+        Log.d("Okay!!!",textview+" ");
+        textview.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+        Log.d("Now I am exhausted ",anchor+" ");
+        textview.setThreshold(2);
+        //textview.setValidator(new Validator());
+        //textview.setVisibility(0);
+        //ListView listView = (ListView)findViewById(R.id.yourlistview);
+        Log.d(TAG," after adapter se");
+        
+        Log.d("here ",v.getTag()+" ");
+        
+        TryingAsync try1 = new TryingAsync();
+        ArrayList<String> ar1;
+        try {
+            ar1 = try1.execute(vals).get();
+            Log.d("I have no energy left",ar1.get(0));
+            adapter = new ArrayAdapter<String>(this,R.layout.share_friends_list_item,ar1);
+            
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+   
+            Log.d("I am going mad now !!!!!!!!!!!!!",adapter.getItem(0));
+            textview.setAdapter(adapter);
+            textview.setFocusableInTouchMode(true);
+            textview.setOnItemClickListener(new OnItemClickListener() {
+                
+                @Override
+                public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                    // TODO Auto-generated method stub
+                    
+                            Toast.makeText(FileDisplayActivity.this, "Got cclicked"+ adapter.getItem(position),Toast.LENGTH_SHORT);
+                            Log.d("got clicked",adapter.getItem(position));
+                            
+                        }
+                            
+                
+            });
+           
+            //textview.setFocusable(false);        
+                    
+                    Log.d(TAG,"show");
+    }
+    /*class Validator implements MultiAutoCompleteTextView.Validator{
+        
+        
+        @Override
+        void i
+    }*/
+/**
+ * 
+ * end of VillageShare 
+ * 
+ * 
+ */
+
     /**
      * Shows a dialog with the change log of the current version after each app update
      * 

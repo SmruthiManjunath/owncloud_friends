@@ -296,4 +296,8 @@ More information can be found on the Facebook website: https://developers.facebo
 	<string name="Accept">Accept</string>
 	<string name="Remove">Remove</string>
 	<string name="about_refresh_friends">Refresh</string>
+	<string name="error_title">OK</string>
+	<string name="error_ok">OK</string>
+	<string name="sharebtn">Share</string>
+	<string name="common_share">Share</string>
 </resources>

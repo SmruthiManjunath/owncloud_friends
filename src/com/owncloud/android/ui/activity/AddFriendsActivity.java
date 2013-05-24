@@ -109,6 +109,11 @@ public class AddFriendsActivity extends Activity implements OnClickListener{
                            friendNames.add(jary.getString(i));
                            Log.d(TAG,jary.getString(i));
                        }
+                       runOnUiThread(new Runnable() {
+                           public void run() {
+                               notifyDataChanged();
+                           }
+                       }); 
                        if(jary.length() == 0){
                            //TextView frndTxt = (TextView)findViewById(R.id.yourfrndtxt);
                            runOnUiThread(new Runnable() {
@@ -150,7 +155,9 @@ public class AddFriendsActivity extends Activity implements OnClickListener{
         Add.setOnClickListener(this);
         
     }
-
+    protected void notifyDataChanged() {
+        adapter.notifyDataSetChanged();
+    }
     @Override
     public void onClick(View view) {
         // TODO Auto-generated method stub

@@ -20,18 +20,9 @@ package com.owncloud.android.ui.adapter;
 
 import java.util.Vector;
 
-import com.owncloud.android.AccountUtils;
-import com.owncloud.android.DisplayUtils;
-import com.owncloud.android.datamodel.DataStorageManager;
-import com.owncloud.android.datamodel.OCFile;
-import com.owncloud.android.files.services.FileDownloader.FileDownloaderBinder;
-import com.owncloud.android.files.services.FileUploader.FileUploaderBinder;
-import com.owncloud.android.ui.activity.TransferServiceGetter;
-
-import com.owncloud.android.R;
-
 import android.accounts.Account;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +31,15 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.owncloud.android.AccountUtils;
+import com.owncloud.android.DisplayUtils;
+import com.owncloud.android.R;
+import com.owncloud.android.datamodel.DataStorageManager;
+import com.owncloud.android.datamodel.OCFile;
+import com.owncloud.android.files.services.FileDownloader.FileDownloaderBinder;
+import com.owncloud.android.files.services.FileUploader.FileUploaderBinder;
+import com.owncloud.android.ui.activity.TransferServiceGetter;
 
 /**
  * This Adapter populates a ListView with all files and folders in an ownCloud
@@ -55,7 +55,7 @@ public class FileListListAdapter extends BaseAdapter implements ListAdapter {
     private DataStorageManager mStorageManager;
     private Account mAccount;
     private TransferServiceGetter mTransferServiceGetter;
-
+    String TAG = "FileListListAdapter";
     public FileListListAdapter(OCFile file, DataStorageManager storage_man,
             Context context, TransferServiceGetter transferServiceGetter) {
         mStorageManager = storage_man;
@@ -137,12 +137,13 @@ public class FileListListAdapter extends BaseAdapter implements ListAdapter {
             TextView fileSizeV = (TextView) view.findViewById(R.id.file_size);
             TextView lastModV = (TextView) view.findViewById(R.id.last_mod);
             ImageView checkBoxV = (ImageView) view.findViewById(R.id.custom_checkbox);
-            
+            ImageView btn = (ImageView)view.findViewById(R.id.share);
             if (!file.isDirectory()) {
                 fileSizeV.setVisibility(View.VISIBLE);
                 fileSizeV.setText(DisplayUtils.bytesToHumanReadable(file.getFileLength()));
                 lastModV.setVisibility(View.VISIBLE);
                 lastModV.setText(DisplayUtils.unixTimeToHumanReadable(file.getModificationTimestamp()));
+                btn.setVisibility(View.VISIBLE);
                 // this if-else is needed even thoe fav icon is visible by default
                 // because android reuses views in listview
                 if (!file.keepInSync()) {
@@ -167,6 +168,7 @@ public class FileListListAdapter extends BaseAdapter implements ListAdapter {
                fileSizeV.setVisibility(View.GONE);
                lastModV.setVisibility(View.GONE);
                checkBoxV.setVisibility(View.GONE);
+               btn.setVisibility(View.GONE);
                view.findViewById(R.id.imageView3).setVisibility(View.GONE);
             }
         }
@@ -188,6 +190,8 @@ public class FileListListAdapter extends BaseAdapter implements ListAdapter {
     public boolean isEmpty() {
         return (mFiles == null || mFiles.isEmpty());
     }
+    
+    
 
     /**
      * Change the adapted directory for a new one

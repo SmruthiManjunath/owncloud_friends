@@ -94,7 +94,7 @@ public class AcceptFriendRequestsActivity extends Activity {
                     Log.d("response tewo aewrwq"," "+obj1.get("receivedFriendshipRequests"));
                    
                     jary1 = obj1.getJSONArray("receivedFriendshipRequests");
-                    receivedFriendshipRequestArray.clear();
+                    //receivedFriendshipRequestArray.clear();
                     Log.d(TAG,"Finished http request");
                     for(int i = 0; i<jary1.length();i++){
                        Log.d("valu f",jary1.getString(i));
@@ -102,6 +102,11 @@ public class AcceptFriendRequestsActivity extends Activity {
                         
                         
                     }
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            notifyDataChanged();
+                        }
+                    }); 
                    if(jary1.length()==0){
                        
                        runOnUiThread(new Runnable() {
@@ -156,7 +161,9 @@ public class AcceptFriendRequestsActivity extends Activity {
         
     }
 
-        
+    protected void notifyDataChanged() {
+        friendadapter.notifyDataSetChanged();
+    }  
         
         void display(){
              runOnUiThread(new Runnable() {

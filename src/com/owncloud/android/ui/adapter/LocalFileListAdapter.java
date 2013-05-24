@@ -22,18 +22,19 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import com.owncloud.android.DisplayUtils;
-import com.owncloud.android.R;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.owncloud.android.DisplayUtils;
+import com.owncloud.android.R;
 
 /**
  * This Adapter populates a ListView with all files and directories contained
@@ -110,14 +111,18 @@ public class LocalFileListAdapter extends BaseAdapter implements ListAdapter {
             TextView fileSizeV = (TextView) view.findViewById(R.id.file_size);
             TextView lastModV = (TextView) view.findViewById(R.id.last_mod);
             ImageView checkBoxV = (ImageView) view.findViewById(R.id.custom_checkbox);
+            //Button btn = (Button)view.findViewById(R.id.share);
             if (!file.isDirectory()) {
                 fileSizeV.setVisibility(View.VISIBLE);
                 fileSizeV.setText(DisplayUtils.bytesToHumanReadable(file.length()));
                 lastModV.setVisibility(View.VISIBLE);
                 lastModV.setText(DisplayUtils.unixTimeToHumanReadable(file.lastModified()));
+                //btn.setVisibility(View.VISIBLE);
                 ListView parentList = (ListView)parent;
+                
                 if (parentList.getChoiceMode() == ListView.CHOICE_MODE_NONE) { 
                     checkBoxV.setVisibility(View.GONE);
+                    //btn.setVisibility(View.GONE);
                 } else {
                     if (parentList.isItemChecked(position)) {
                         checkBoxV.setImageResource(android.R.drawable.checkbox_on_background);
@@ -131,6 +136,7 @@ public class LocalFileListAdapter extends BaseAdapter implements ListAdapter {
                 fileSizeV.setVisibility(View.GONE);
                 lastModV.setVisibility(View.GONE);
                 checkBoxV.setVisibility(View.GONE);
+                //btn.setVisibility(View.GONE);
             }
             
             view.findViewById(R.id.imageView2).setVisibility(View.INVISIBLE);   // not GONE; the alignment changes; ugly way to keep it

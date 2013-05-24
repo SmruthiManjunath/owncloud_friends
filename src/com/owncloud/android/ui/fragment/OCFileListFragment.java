@@ -101,7 +101,7 @@ public class OCFileListFragment extends FragmentListView implements EditNameDial
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         Log.i(TAG, "onActivityCreated() start");
-        
+        Log.d(TAG, "got cald");
         super.onActivityCreated(savedInstanceState);
         mAdapter = new FileListListAdapter(mContainerActivity.getInitialDirectory(), mContainerActivity.getStorageManager(), getActivity(), mContainerActivity);
         setListAdapter(mAdapter);
@@ -135,6 +135,7 @@ public class OCFileListFragment extends FragmentListView implements EditNameDial
     @Override
     public void onItemClick(AdapterView<?> l, View v, int position, long id) {
         OCFile file = (OCFile) mAdapter.getItem(position);
+        Log.d(TAG,"item click");
         if (file != null) {
             /// Click on a directory
             if (file.getMimetype().equals("DIR")) {

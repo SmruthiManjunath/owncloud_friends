@@ -98,6 +98,8 @@
                 android:text="TextView"
                 android:layout_weight=".5"
                 android:textSize="12dip"/>
+            
+            
 
         </LinearLayout>
 
@@ -112,5 +114,18 @@
         android:layout_marginRight="4dp"
         android:gravity=""
         android:src="@android:drawable/checkbox_off_background" />
+   <ImageView
+                android:id="@+id/share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_weight=".5"
+                android:src="@drawable/share"
+                android:clickable="true"
+                android:onClick="shareHandler" >
+                
+                
+                </ImageView>
+                
 
 </LinearLayout>

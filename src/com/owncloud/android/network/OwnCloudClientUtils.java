@@ -83,7 +83,7 @@ public class OwnCloudClientUtils {
         String username = account.name.substring(0, account.name.lastIndexOf('@'));
         String password = AccountManager.get(context).getPassword(account);
         //String password = am.blockingGetAuthToken(mAccount, AccountAuthenticator.AUTH_TOKEN_TYPE, true);
-        
+        Log.d(" WebdavClient set ",username+" "+password);
         client.setCredentials(username, password);
         
         return client;
@@ -156,10 +156,12 @@ public class OwnCloudClientUtils {
         boolean isRegistered = (pr != null && pr.getSocketFactory() instanceof AdvancedSslSocketFactory);
         if (register && !isRegistered) {
             Protocol.registerProtocol("https", new Protocol("https", getAdvancedSslSocketFactory(context), 443));
+            Log.d("OwnCloudClientUtils ","ssl enabled on server");
             
         } else if (!register && isRegistered) {
             if (mDefaultHttpsProtocol != null) {
                 Protocol.registerProtocol("https", mDefaultHttpsProtocol);
+                Log.d("OwnCloudClientUtils ","no ssl enabled on server");
             }
         }
     }

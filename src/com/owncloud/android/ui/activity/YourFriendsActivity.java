@@ -46,7 +46,7 @@ public class YourFriendsActivity extends Activity{
     Account accountname;
     ListView listView;
     friendlistArrayAdapter adapter;
-    ArrayList<String> friendNames;
+    static ArrayList<String> friendNames;
     JSONArray jary;
     String username;
     String url;
@@ -61,7 +61,7 @@ public class YourFriendsActivity extends Activity{
         friendNames = new ArrayList<String>();
         adapter = new friendlistArrayAdapter(this,R.layout.removeyourfriends,friendNames);
         listView.setAdapter(adapter);
-        
+        Log.d("Heererer","awkrjjwr");
         accountname = AccountUtils.getCurrentOwnCloudAccount(getBaseContext());
         String vals[] = accountname.toString().split("[@=,]");
         username = vals[1];
@@ -97,6 +97,8 @@ public class YourFriendsActivity extends Activity{
                         friendNames.add(jary.getString(i));
                         Log.d("TAG",jary.getString(i));
                     }
+                    
+                    
                     //display();
                     if(jary.length() == 0){
                         //TextView frndTxt = (TextView)findViewById(R.id.yourfrndtxt);
@@ -133,6 +135,7 @@ public class YourFriendsActivity extends Activity{
             }
             };
             new Thread(runnable).start();
+            adapter.notifyDataSetChanged();
     }
    
     void display(){
@@ -151,6 +154,19 @@ public class YourFriendsActivity extends Activity{
        
    
    }
+    
+
+    protected void onPostExecute(ArrayList<String> items) {
+        Log.d("ejqwir",items.size()+" ");
+        //adapter.clear();
+        Log.d("ejqwir",items.size()+" ");
+        //adapter.addAll(items);
+        Log.d("ejqwir",items.size()+" ");
+        for(int i =0 ;i<items.size();i++){
+            Log.d("onPosrtwkr ",adapter.getItem(i));
+        }
+        adapter.notifyDataSetChanged();
+    }
     
     public void handler1(View v){
         final int position =listView.getPositionForView((View) v.getParent());
@@ -181,9 +197,17 @@ public class YourFriendsActivity extends Activity{
                         public void run() {
                             String s = Integer.toString(position);
                             adapter.remove(s);
+                            friendNames.remove(position);
                             //notifyDataSetChanged();
                             Log.d("rem ",str+" ");
                             
+                                    //Log.d("Inside ru",friendNames.size()+" ");
+                            //adapter.clear();
+                            //adapter.addAll(friendNames);
+                           //onPostExecute(friendNames);
+                            adapter.notifyDataSetChanged();
+                                    //adapter.notifyDataSetChanged();
+                           
                    //stuff that updates ui
 
                        }

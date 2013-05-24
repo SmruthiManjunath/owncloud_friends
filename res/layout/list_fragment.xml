@@ -38,5 +38,6 @@
         android:text="@string/file_list_empty"
         android:visibility="gone"
 	/>
+    
 
 </LinearLayout>    

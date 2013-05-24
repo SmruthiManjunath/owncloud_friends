@@ -186,7 +186,7 @@ public class FileDetailFragment extends SherlockFragment implements
             mView.findViewById(R.id.fdDownloadBtn).setOnClickListener(this);
             mView.findViewById(R.id.fdOpenBtn).setOnClickListener(this);
             mView.findViewById(R.id.fdRemoveBtn).setOnClickListener(this);
-            //mView.findViewById(R.id.fdShareBtn).setOnClickListener(this);
+            mView.findViewById(R.id.fdShareBtn).setOnClickListener(this);
             ProgressBar progressBar = (ProgressBar)mView.findViewById(R.id.fdProgressBar);
             mProgressListener = new ProgressListener(progressBar);
         }
@@ -361,10 +361,10 @@ public class FileDetailFragment extends SherlockFragment implements
                 Log.e(TAG, "Incorrect view clicked!");
         }
         
-        /* else if (v.getId() == R.id.fdShareBtn) {
+        if (v.getId() == R.id.fdShareBtn) {
             Thread t = new Thread(new ShareRunnable(mFile.getRemotePath()));
             t.start();
-        }*/
+        }
     }
     
     
