@@ -37,6 +37,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.owncloud.android.AccountUtils;
 import com.owncloud.android.R;
@@ -98,7 +99,11 @@ public class YourFriendsActivity extends Activity{
                         Log.d("TAG",jary.getString(i));
                     }
                     
-                    
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            notifyDataChanged();
+                        }
+                    }); 
                     //display();
                     if(jary.length() == 0){
                         //TextView frndTxt = (TextView)findViewById(R.id.yourfrndtxt);
@@ -137,7 +142,9 @@ public class YourFriendsActivity extends Activity{
             new Thread(runnable).start();
             adapter.notifyDataSetChanged();
     }
-   
+    protected void notifyDataChanged() {
+        adapter.notifyDataSetChanged();
+    }
     void display(){
         runOnUiThread(new Runnable() {
            public void run() {
@@ -196,16 +203,18 @@ public class YourFriendsActivity extends Activity{
                     runOnUiThread(new Runnable() {
                         public void run() {
                             String s = Integer.toString(position);
+                            
                             adapter.remove(s);
                             friendNames.remove(position);
                             //notifyDataSetChanged();
                             Log.d("rem ",str+" ");
-                            
+                            Toast.makeText(YourFriendsActivity.this, "You removed friend successfully", Toast.LENGTH_SHORT).show();
                                     //Log.d("Inside ru",friendNames.size()+" ");
                             //adapter.clear();
                             //adapter.addAll(friendNames);
                            //onPostExecute(friendNames);
                             adapter.notifyDataSetChanged();
+                            
                                     //adapter.notifyDataSetChanged();
                            
                    //stuff that updates ui

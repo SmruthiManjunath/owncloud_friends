@@ -94,6 +94,11 @@ public class AcceptFriendRequestsActivity extends Activity {
                     Log.d("response tewo aewrwq"," "+obj1.get("receivedFriendshipRequests"));
                    
                     jary1 = obj1.getJSONArray("receivedFriendshipRequests");
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            notifyDataChanged();
+                        }
+                    }); 
                     //receivedFriendshipRequestArray.clear();
                     Log.d(TAG,"Finished http request");
                     for(int i = 0; i<jary1.length();i++){
@@ -102,11 +107,7 @@ public class AcceptFriendRequestsActivity extends Activity {
                         
                         
                     }
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            notifyDataChanged();
-                        }
-                    }); 
+                    
                    if(jary1.length()==0){
                        
                        runOnUiThread(new Runnable() {
@@ -209,10 +210,11 @@ public class AcceptFriendRequestsActivity extends Activity {
                         runOnUiThread(new Runnable() {
                             public void run() {
                                 String s = Integer.toString(position);
-                                friendadapter.remove(s);
-                                //notifyDataSetChanged();
+                                //friendadapter.remove(s);
+                                friendadapter.add(s);
+                                notifyDataChanged();
                                 Log.d("rem ",str+" ");
-                                
+                                Toast.makeText(AcceptFriendRequestsActivity.this, "You accepted friend request successfully", Toast.LENGTH_SHORT).show();
                        //stuff that updates ui
 
                            }
@@ -281,7 +283,7 @@ public class AcceptFriendRequestsActivity extends Activity {
                                 friendadapter.remove(s);
                                 //notifyDataSetChanged();
                                 Log.d("rem ",str+" ");
-                                
+                                Toast.makeText(AcceptFriendRequestsActivity.this, "You removed friend request successfully", Toast.LENGTH_SHORT).show();
                        //stuff that updates ui
 
                            }

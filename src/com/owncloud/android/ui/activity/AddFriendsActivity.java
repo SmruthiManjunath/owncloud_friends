@@ -195,6 +195,7 @@ public class AddFriendsActivity extends Activity implements OnClickListener{
                                 public void run() {
                                     adapter.add(val);
                                     friendName.setText("");
+                                    Toast.makeText(AddFriendsActivity.this, "You requested "+val+" to add as friend", Toast.LENGTH_SHORT).show();
                            //stuff that updates ui
 
                                }
@@ -260,6 +261,7 @@ public class AddFriendsActivity extends Activity implements OnClickListener{
                             //notifyDataSetChanged();
                             friendNames.remove(position);
                             Log.d("rem ",s+" ");
+                            Toast.makeText(AddFriendsActivity.this, "You removed friend successfully", Toast.LENGTH_SHORT).show();
                             
                    //stuff that updates ui
 
