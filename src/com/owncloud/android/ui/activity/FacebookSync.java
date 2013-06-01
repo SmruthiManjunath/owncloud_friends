@@ -145,7 +145,6 @@ public class FacebookSync extends Activity implements OnClickListener,DialogInte
                 asyncRunner.request("me/friends",params,"GET",new listener(this), null);
                 friends_url = new URL("http://graph.facebook.com/"+id+"/friends?fields=name");
                 
-                
             } catch (MalformedURLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -180,7 +179,6 @@ public class FacebookSync extends Activity implements OnClickListener,DialogInte
                 //facebook.logout(this);
                 Toast.makeText(FacebookSync.this, "You re logged in", Toast.LENGTH_SHORT).show();
                 showDialog(0);
-                Log.d("loginfa","I am exhausted ");
         }
         else {
             
@@ -188,18 +186,14 @@ public class FacebookSync extends Activity implements OnClickListener,DialogInte
             //chkBeforeLogging();
             showDialog(0);
             Toast.makeText(FacebookSync.this, "Before logging in", Toast.LENGTH_SHORT).show();
-            Log.d("loginfa","I am exhausted ");
             
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode,int resultCode, Intent data){
-        //super.onActivityResult(requestCode, resultCode, data);
-        
-        Log.d("after syncing","hoqhfe;;;;;;;;;;;;;;;w;oggqfyccgqffffffff");
-        //facebook.authorizeCallback(requestCode, resultCode, data);
-        //Log.d("after syncing","hoqhfe;;;;;;;;;;;;;;;w;oggqfyccgqffffffff");
+        super.onActivityResult(requestCode, resultCode, data);
+        facebook.authorizeCallback(requestCode, resultCode, data);
     }
 
     @Override
@@ -220,7 +214,6 @@ public class FacebookSync extends Activity implements OnClickListener,DialogInte
      @Override
      public void onClick(DialogInterface dialog, int which) {
          // TODO Auto-generated method stub
-         //Toast.makeText(FacebookSync.this, "Activity will continue",Toast.LENGTH_LONG).show();
          
          if(!facebook.isSessionValid()){
          facebook.authorize(FacebookSync.this, new String[] {"email","read_friendlists"},new DialogListener() {
@@ -248,7 +241,6 @@ public class FacebookSync extends Activity implements OnClickListener,DialogInte
                  Log.d("wjhkfrewjwerhiwrehwerih"," "+facebook.getAccessExpires());
                  Toast.makeText(FacebookSync.this, "Successfully logged in!", Toast.LENGTH_SHORT).show();
                  loginfacebook();
-                 Log.d("loginfa","I am exhausted ");
              }
              
              @Override
@@ -303,7 +295,6 @@ class listener implements RequestListener{
          final Handler handler;
          final ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
          
-         
         try {
             data = Util.parseJson(response);
             friendsData = data.getJSONArray("data");
@@ -338,11 +329,8 @@ class listener implements RequestListener{
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-       
     }
 
-    
-    
     @Override
     public void onIOException(IOException e, Object state) {
         // TODO Auto-generated method stub

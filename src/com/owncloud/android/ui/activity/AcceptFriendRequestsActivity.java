@@ -50,7 +50,6 @@ public class AcceptFriendRequestsActivity extends Activity {
     Account accountname;
     ListView listView1;
     String username;
-    
     String url;
     friendArrayAdapter friendadapter;
     ArrayList<String> receivedFriendshipRequestArray;
@@ -76,8 +75,6 @@ public class AcceptFriendRequestsActivity extends Activity {
         accountname = AccountUtils.getCurrentOwnCloudAccount(getBaseContext());
         String vals[] = accountname.toString().split("[=,]");
         username = vals[1];
-        Log.d(TAG,username);
-        
         JSONObject obj1 = new JSONObject();
         final ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("CURRENTUSER", username));
@@ -121,7 +118,10 @@ public class AcceptFriendRequestsActivity extends Activity {
                     runOnUiThread(new Runnable() {
                         public void run() {
                             Toast.makeText(AcceptFriendRequestsActivity.this,"Sorry unable to add friend, check internet connection and try after sometime", Toast.LENGTH_LONG).show();
-                        }
+                            //.frndtxt.setText(sentFriendshipRequestArray(i));
+                            //Log.d("qiwehjqwpe "," in display");
+
+                       }
                    }); 
                }
             } catch (UnsupportedEncodingException e) {
@@ -293,7 +293,6 @@ public class AcceptFriendRequestsActivity extends Activity {
                 holder.frndtxt.setText("You have no pending friend requests");
                 return null;
             }
-           
         }
         
        public class friendRowholder{

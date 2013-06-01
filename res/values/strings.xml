@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+<<<<<<< HEAD
+    <string name="app_name">Owncloud-androidTestTest</string>
+
+</resources>
+=======
     <string name="app_name">ownCloud</string>
     <string name="main_password">Password:</string>
     <string name="main_login">Username:</string>
@@ -307,3 +312,4 @@ More information can be found on the Facebook website: https://developers.facebo
 	    <item> "Kalene" </item>
 	</string-array>
 </resources>
+>>>>>>> 6757c0bf2882c5f0f4a540a334e13632e81bc132

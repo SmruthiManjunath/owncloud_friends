@@ -75,7 +75,7 @@ public class TabLayoutActivity extends TabActivity{
         String currentTag = mTabHost.getCurrentTabTag();
         Log.d(TAG+"jeewjqqjpqejpq ",currentTag);
         Class<? extends Activity> currentClass = manager.getCurrentActivity().getClass();
-        manager.destroyActivity(currentTag, true);
+        //manager.destroyActivity(currentTag, true);
         manager.startActivity(currentTag, new Intent(this, currentClass)); 
     }
     @Override
