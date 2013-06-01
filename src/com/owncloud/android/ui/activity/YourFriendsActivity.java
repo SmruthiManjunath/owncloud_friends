@@ -26,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -37,9 +38,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.owncloud.android.AccountUtils;
 import com.owncloud.android.R;
+import com.owncloud.android.authenticator.AccountAuthenticator;
+import com.owncloud.android.utils.OwnCloudVersion;
 
 public class YourFriendsActivity extends Activity{
     
@@ -62,10 +66,14 @@ public class YourFriendsActivity extends Activity{
         adapter = new friendlistArrayAdapter(this,R.layout.removeyourfriends,friendNames);
         listView.setAdapter(adapter);
         Log.d("Heererer","awkrjjwr");
-        accountname = AccountUtils.getCurrentOwnCloudAccount(getBaseContext());
-        String vals[] = accountname.toString().split("[@=,]");
+        AccountManager am = AccountManager.get(this);
+        Account account = AccountUtils.getCurrentOwnCloudAccount(this);
+        OwnCloudVersion ocv = new OwnCloudVersion(am.getUserData(account, AccountAuthenticator.KEY_OC_VERSION));
+        String[] url1 = (am.getUserData(account, AccountAuthenticator.KEY_OC_BASE_URL)).split("/");
+        url = url1[2];
+        //accountname = AccountUtils.getCurrentOwnCloudAccount(getBaseContext());
+        String vals[] = account.toString().split("[=,]");
         username = vals[1];
-        url = vals[2];
         JSONObject obj1 = new JSONObject();
         final ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("CURRENTUSER", username));
@@ -98,7 +106,11 @@ public class YourFriendsActivity extends Activity{
                         Log.d("TAG",jary.getString(i));
                     }
                     
-                    
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            notifyDataChanged();
+                        }
+                    }); 
                     //display();
                     if(jary.length() == 0){
                         //TextView frndTxt = (TextView)findViewById(R.id.yourfrndtxt);
@@ -137,7 +149,9 @@ public class YourFriendsActivity extends Activity{
             new Thread(runnable).start();
             adapter.notifyDataSetChanged();
     }
-   
+    protected void notifyDataChanged() {
+        adapter.notifyDataSetChanged();
+    }
     void display(){
         runOnUiThread(new Runnable() {
            public void run() {
@@ -196,16 +210,18 @@ public class YourFriendsActivity extends Activity{
                     runOnUiThread(new Runnable() {
                         public void run() {
                             String s = Integer.toString(position);
+                            
                             adapter.remove(s);
                             friendNames.remove(position);
                             //notifyDataSetChanged();
                             Log.d("rem ",str+" ");
-                            
+                            Toast.makeText(YourFriendsActivity.this, "You removed friend successfully", Toast.LENGTH_SHORT).show();
                                     //Log.d("Inside ru",friendNames.size()+" ");
                             //adapter.clear();
                             //adapter.addAll(friendNames);
                            //onPostExecute(friendNames);
                             adapter.notifyDataSetChanged();
+                            
                                     //adapter.notifyDataSetChanged();
                            
                    //stuff that updates ui

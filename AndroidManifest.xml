@@ -47,7 +47,7 @@
     <application
         android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:theme="@style/Theme.ownCloud"> 
+        android:theme="@style/Theme.ownCloud" android:debuggable="true"> 
         <activity
             android:name=".ui.activity.FileDisplayActivity"
             android:label="@string/app_name">
@@ -160,6 +160,7 @@
         <activity android:name=".ui.activity.AddFriendsActivity" />
         <activity android:name=".ui.activity.AcceptFriendRequestsActivity" />
         <activity android:name=".ui.activity.FriendsActivity"/>
+         <activity android:name=".ui.activity.FacebookFriendSelectDisplay" />
         
         
         <service android:name=".files.services.InstantUploadService" />

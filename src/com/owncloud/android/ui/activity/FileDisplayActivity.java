@@ -28,6 +28,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
 import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
@@ -109,6 +110,7 @@ import com.owncloud.android.ui.fragment.OCFileListFragment;
 import com.owncloud.android.ui.preview.PreviewImageActivity;
 import com.owncloud.android.ui.preview.PreviewImageFragment;
 import com.owncloud.android.ui.preview.PreviewMediaFragment;
+import com.owncloud.android.utils.OwnCloudVersion;
 
 import eu.alefzero.webdav.WebdavClient;
 
@@ -269,13 +271,23 @@ public class FileDisplayActivity extends SherlockFragmentActivity implements
     public void shareHandler(View v){
         Log.d(TAG," got clicked to share");
         //Thread t1;
-        Account accountname = AccountUtils.getCurrentOwnCloudAccount(getBaseContext());
+        /*Account accountname = AccountUtils.getCurrentOwnCloudAccount(getBaseContext());
         String vals[] = accountname.toString().split("[@=,]");
         String username = vals[1];
-        final String url = vals[2];
+        final String url = vals[2]; */
+        
+        AccountManager am = AccountManager.get(this);
+        Account account = AccountUtils.getCurrentOwnCloudAccount(this);
+        OwnCloudVersion ocv = new OwnCloudVersion(am.getUserData(account, AccountAuthenticator.KEY_OC_VERSION));
+        String[] url1 = (am.getUserData(account, AccountAuthenticator.KEY_OC_BASE_URL)).split("/");
+        String url = url1[2];
+        //accountname = AccountUtils.getCurrentOwnCloudAccount(gettingApplicationContext);
+        String vals[] = account.toString().split("[=,]");
+        String username = vals[1];
         JSONObject obj1 = new JSONObject();
         final ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("CURRENTUSER", username));
+        String vals1[]={username,url};
         //textview = (AutoCompleteTextView)v.findViewById(R.id.auto_complete);
         //sharefriendlistArrayAdapter adapter;
         //textview = new AutoCompleteTextView(this);
@@ -298,9 +310,12 @@ public class FileDisplayActivity extends SherlockFragmentActivity implements
         TryingAsync try1 = new TryingAsync();
         ArrayList<String> ar1;
         try {
-            ar1 = try1.execute(vals).get();
-            Log.d("I have no energy left",ar1.get(0));
+            ar1 = try1.execute(vals1).get();
+            //Log.d("I have no energy left",ar1.get(0));
+            if(ar1!=null){
             adapter = new ArrayAdapter<String>(this,R.layout.share_friends_list_item,ar1);
+            }
+                
             
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block

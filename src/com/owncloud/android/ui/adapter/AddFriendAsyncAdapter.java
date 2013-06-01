@@ -1,4 +1,7 @@
-package com.owncloud.android.ui.activity;
+/**
+ * 
+ */
+package com.owncloud.android.ui.adapter;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -18,19 +21,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.owncloud.android.R;
-
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
-public class TryingAsync extends AsyncTask<String, Integer , ArrayList<String>> {
+/**
+ * @author smruthi
+ *
+ */
+public class AddFriendAsyncAdapter extends AsyncTask<String, Integer , ArrayList<String>> {
 
     ArrayAdapter<String> adapter;
     ArrayList<String> sharefriendList;
@@ -39,11 +39,11 @@ public class TryingAsync extends AsyncTask<String, Integer , ArrayList<String>> 
     @Override
     protected ArrayList<String> doInBackground(String... urls) {
         // TODO Auto-generated method stub
-        String url = urls[1];
-        String username = urls[0];
+        String url = urls[2];
+        String username = urls[1];
         ArrayList<String> sharefriendList = new ArrayList<String>();
-        Log.d(" Seriously :(",url+" "+username);
-        HttpPost post = new HttpPost("http://"+url+"/owncloud/index.php/apps/friends/friendlist");
+        Log.d(" Seriously :(",url);
+        HttpPost post = new HttpPost("http://"+url+"/owncloud/index.php/apps/friends/removefriendrequest");
         final ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("CURRENTUSER", username));
         HttpEntity entity;
@@ -63,7 +63,6 @@ public class TryingAsync extends AsyncTask<String, Integer , ArrayList<String>> 
              
              JSONArray jary = obj1.getJSONArray("friendships");
              //sharefriendList.clear();
-             Log.d("TryingAsync",jary.length()+" ");
              for(int i = 0; i<jary.length();i++){
              sharefriendList.add(jary.getString(i));
                  Log.d("TAG",jary.getString(i));

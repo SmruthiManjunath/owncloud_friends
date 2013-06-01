@@ -769,18 +769,26 @@ public class FileDetailFragment extends SherlockFragment implements
                 
                 final String WEBDAV_SCRIPT = "webdav.php";
                 final String WEBDAV_FILES_LOCATION = "/files/";
-                
+               
+                /**
+                 * Create owncloud client for sharing
+                 * 1. Set the https parameters
+                 * 2. Check if ssl enabled on server 
+                 * 3. Create owncloud client multi threaded manager
+                 * 4. set base uri ; username @ ip/owncloud
+                 */
                 WebdavClient wc = OwnCloudClientUtils.createOwnCloudClient(account, getActivity().getApplicationContext());
                 HttpConnectionManagerParams params = new HttpConnectionManagerParams();
                 params.setMaxConnectionsPerHost(wc.getHostConfiguration(), 5);
 
                 //wc.getParams().setParameter("http.protocol.single-cookie-header", true);
                 //wc.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
-
+                Log.i(TAG,am.getUserData(account, AccountAuthenticator.KEY_OC_BASE_URL));
                 PostMethod post = new PostMethod(am.getUserData(account, AccountAuthenticator.KEY_OC_BASE_URL) + APPS_PATH + SHARE_PATH);
 
                 post.addRequestHeader("Content-type","application/x-www-form-urlencoded; charset=UTF-8" );
                 post.addRequestHeader("Referer", am.getUserData(account, AccountAuthenticator.KEY_OC_BASE_URL));
+                Log.d(TAG,am.getUserData(account, AccountAuthenticator.KEY_OC_BASE_URL));
                 List<NameValuePair> formparams = new ArrayList<NameValuePair>();
                 Log.d("share", mPath+"");
                 formparams.add(new BasicNameValuePair("sources",mPath));
@@ -790,12 +798,14 @@ public class FileDetailFragment extends SherlockFragment implements
 
                 int status;
                 try {
+                    Log.d("path to file is ",url);
                     PropFindMethod find = new PropFindMethod(url+"/");
                     find.addRequestHeader("Referer", am.getUserData(account, AccountAuthenticator.KEY_OC_BASE_URL));
                     Log.d("sharer", ""+ url+"/");
+                    Log.d("httpConnection",am.getUserData(account, AccountAuthenticator.KEY_OC_BASE_URL));
                     
                     for (org.apache.commons.httpclient.Header a : find.getRequestHeaders()) {
-                        Log.d("sharer-h", a.getName() + ":"+a.getValue());
+                        Log.i("sharer-h", a.getName() + ":"+a.getValue());
                     }
                     
                     int status2 = wc.executeMethod(find);
@@ -827,6 +837,7 @@ public class FileDetailFragment extends SherlockFragment implements
                     Log.d("share", " " +resp);
                     
                     if(status != HttpStatus.SC_OK ||resp == null || resp.equals("") || resp.startsWith("false")) {
+                        Log.d(TAG,"could not ");
                         return;
                      }
 

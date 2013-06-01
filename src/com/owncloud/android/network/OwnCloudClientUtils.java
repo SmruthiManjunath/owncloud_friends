@@ -80,7 +80,10 @@ public class OwnCloudClientUtils {
         Uri uri = Uri.parse(AccountUtils.constructFullURLForAccount(context, account));
         WebdavClient client = createOwnCloudClient(uri, context);
         
-        String username = account.name.substring(0, account.name.lastIndexOf('@'));
+        //String username = account.name.substring(0, account.name.lastIndexOf('@'));
+        String username = account.name;
+        Log.i(TAG,account.toString());
+        Log.i(TAG+"ewfubiiiiiiiii",username);
         String password = AccountManager.get(context).getPassword(account);
         //String password = am.blockingGetAuthToken(mAccount, AccountAuthenticator.AUTH_TOKEN_TYPE, true);
         Log.d(" WebdavClient set ",username+" "+password);
@@ -100,7 +103,7 @@ public class OwnCloudClientUtils {
      * @return          A WebdavClient object ready to be used
      */
     public static WebdavClient createOwnCloudClient(Uri uri, String username, String password, Context context) {
-        Log.d(TAG, "Creating WebdavClient for " + username + "@" + uri);
+        Log.d(TAG, "Creating WebdavClient for " + uri);
         
         WebdavClient client = createOwnCloudClient(uri, context);
         

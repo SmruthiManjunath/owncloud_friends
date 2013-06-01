@@ -22,19 +22,6 @@ package com.owncloud.android.ui.activity;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import com.owncloud.android.AccountUtils;
-import com.owncloud.android.authenticator.AccountAuthenticator;
-import com.owncloud.android.authenticator.AuthenticationRunnable;
-import com.owncloud.android.authenticator.OnAuthenticationResultListener;
-import com.owncloud.android.authenticator.OnConnectCheckListener;
-import com.owncloud.android.ui.dialog.SslValidatorDialog;
-import com.owncloud.android.ui.dialog.SslValidatorDialog.OnSslValidatorListener;
-import com.owncloud.android.network.OwnCloudClientUtils;
-import com.owncloud.android.operations.ConnectionCheckOperation;
-import com.owncloud.android.operations.OnRemoteOperationListener;
-import com.owncloud.android.operations.RemoteOperation;
-import com.owncloud.android.operations.RemoteOperationResult;
-
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
@@ -55,11 +42,28 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.owncloud.android.AccountUtils;
 import com.owncloud.android.R;
+import com.owncloud.android.authenticator.AccountAuthenticator;
+import com.owncloud.android.authenticator.AuthenticationRunnable;
+import com.owncloud.android.authenticator.OnAuthenticationResultListener;
+import com.owncloud.android.authenticator.OnConnectCheckListener;
+import com.owncloud.android.network.OwnCloudClientUtils;
+import com.owncloud.android.operations.ConnectionCheckOperation;
+import com.owncloud.android.operations.OnRemoteOperationListener;
+import com.owncloud.android.operations.RemoteOperation;
+import com.owncloud.android.operations.RemoteOperationResult;
+import com.owncloud.android.ui.dialog.SslValidatorDialog;
+import com.owncloud.android.ui.dialog.SslValidatorDialog.OnSslValidatorListener;
 
 import eu.alefzero.webdav.WebdavClient;
 
@@ -71,7 +75,7 @@ import eu.alefzero.webdav.WebdavClient;
  */
 public class AuthenticatorActivity extends AccountAuthenticatorActivity
         implements OnAuthenticationResultListener, OnConnectCheckListener, OnRemoteOperationListener, OnSslValidatorListener, 
-        OnFocusChangeListener, OnClickListener {
+        OnFocusChangeListener, OnClickListener, OnItemSelectedListener {
 
     private static final int DIALOG_LOGIN_PROGRESS = 0;
     private static final int DIALOG_SSL_VALIDATOR = 1;
@@ -85,7 +89,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     private ConnectionCheckOperation mConnChkRunnable;
     private final Handler mHandler = new Handler();
     private String mBaseUrl;
-    
+    Object location;
     private static final String STATUS_TEXT = "STATUS_TEXT";
     private static final String STATUS_ICON = "STATUS_ICON";
     private static final String STATUS_CORRECT = "STATUS_CORRECT";
@@ -106,7 +110,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         ImageView iv2 = (ImageView) findViewById(R.id.viewPassword);
         TextView tv = (TextView) findViewById(R.id.host_URL);
         TextView tv2 = (TextView) findViewById(R.id.account_password);
-
+        Spinner s1 = (Spinner) findViewById(R.id.spinner1);
         if (savedInstanceState != null) {
             mStatusIcon = savedInstanceState.getInt(STATUS_ICON);
             mStatusText = savedInstanceState.getInt(STATUS_TEXT);
@@ -128,7 +132,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         iv2.setOnClickListener(this);
         tv.setOnFocusChangeListener(this);
         tv2.setOnFocusChangeListener(this);
-
+        //add spinner 
+        s1.setOnItemSelectedListener(this);
         Button b = (Button) findViewById(R.id.account_register);
         if (b != null) {
             b.setText(String.format(getString(R.string.auth_register), getString(R.string.app_name)));
@@ -207,7 +212,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
     public void onAuthenticationResult(boolean success, String message) {
         if (success) {
-            TextView username_text = (TextView) findViewById(R.id.account_username), password_text = (TextView) findViewById(R.id.account_password);
+            TextView username_text = ((TextView) findViewById(R.id.account_username)), password_text = (TextView) findViewById(R.id.account_password);
 
             URL url;
             try {
@@ -218,8 +223,10 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                 return;
             }
 
-            String username = username_text.getText().toString().trim();
-            String accountName = username + "@" + url.getHost();
+            String username = (username_text.getText().toString().trim());
+            //String accountName = username + "@" + url.getHost();
+            String accountName = username+"@"+location;
+            Log.d(TAG+"ejowqrrrr",username);
             if (url.getPort() >= 0) {
                 accountName += ":" + url.getPort();
             }
@@ -316,7 +323,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         String url = ((TextView) findViewById(R.id.host_URL)).getText()
                 .toString().trim();
         String username = ((TextView) findViewById(R.id.account_username))
-                .getText().toString();
+                .getText().toString()+"@"+location;
         String password = ((TextView) findViewById(R.id.account_password))
                 .getText().toString();
         if (url.endsWith("/"))
@@ -604,6 +611,20 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     @Override
     public void onFailedSavingCertificate() {
         showDialog(DIALOG_CERT_NOT_SAVED);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        // TODO Auto-generated method stub
+        location = parent.getItemAtPosition(position);
+        //Toast.makeText(parent.getContext(), "OnItemSelectedListener : " + parent.getItemAtPosition(position).toString(),Toast.LENGTH_SHORT).show();
+        
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
+        // TODO Auto-generated method stub
+        
     }
     
 }

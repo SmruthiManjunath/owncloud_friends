@@ -23,14 +23,15 @@ import java.net.URL;
 
 import org.apache.commons.httpclient.HttpStatus;
 
+import android.content.Context;
+import android.net.Uri;
+import android.os.Handler;
+import android.util.Log;
+
 import com.owncloud.android.R;
 import com.owncloud.android.network.OwnCloudClientUtils;
 
 import eu.alefzero.webdav.WebdavClient;
-
-import android.content.Context;
-import android.net.Uri;
-import android.os.Handler;
 
 public class AuthenticationRunnable implements Runnable {
 
@@ -59,6 +60,7 @@ public class AuthenticationRunnable implements Runnable {
     public void run() {
         Uri uri;
         uri = Uri.parse(mUrl.toString());
+        Log.d("Authenticatio",mUsername);
         WebdavClient wdc = OwnCloudClientUtils.createOwnCloudClient(uri, mUsername, mPassword, mContext);
         int login_result = wdc.tryToLogin();
         switch (login_result) {

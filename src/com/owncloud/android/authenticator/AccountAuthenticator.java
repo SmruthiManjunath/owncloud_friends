@@ -145,6 +145,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
             return e.getFailureBundle();
         }
         final AccountManager am = AccountManager.get(mContext);
+        Log.d(TAG,am.toString());
         final String password = am.getPassword(account);
         if (password != null) {
             final Bundle result = new Bundle();

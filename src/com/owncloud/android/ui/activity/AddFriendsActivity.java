@@ -9,7 +9,6 @@ package com.owncloud.android.ui.activity;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -27,37 +26,46 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.owncloud.android.AccountUtils;
 import com.owncloud.android.R;
+import com.owncloud.android.authenticator.AccountAuthenticator;
+import com.owncloud.android.utils.OwnCloudVersion;
 
-public class AddFriendsActivity extends Activity implements OnClickListener{
+public class AddFriendsActivity extends Activity implements OnClickListener, OnItemSelectedListener{
    
     
     EditText friendName;
     Button Add;
     Account accountname;
+    Object location;
     TextView textView;
     TextView tv;
     ListView listView;
+    Spinner s1;
     JSONArray jary;
     String url;
     String username;
     friendArrayAdapter adapter;
+
     ArrayList<String> friendNames;
     String TAG="AddFriendsActivity";
     @Override
@@ -76,10 +84,15 @@ public class AddFriendsActivity extends Activity implements OnClickListener{
         friendNames = new ArrayList<String>();
         adapter = new friendArrayAdapter(this,R.layout.removeyourfriends,friendNames);
         listView.setAdapter(adapter);
-        accountname = AccountUtils.getCurrentOwnCloudAccount(getBaseContext());
-        String vals[] = accountname.toString().split("[@=,]");
+        AccountManager am = AccountManager.get(this);
+        Account account = AccountUtils.getCurrentOwnCloudAccount(this);
+        OwnCloudVersion ocv = new OwnCloudVersion(am.getUserData(account, AccountAuthenticator.KEY_OC_VERSION));
+        String[] url1 = (am.getUserData(account, AccountAuthenticator.KEY_OC_BASE_URL)).split("/");
+        url = url1[2];
+        //accountname = AccountUtils.getCurrentOwnCloudAccount(getBaseContext());
+        String vals[] = account.toString().split("[=,]");
         username = vals[1];
-        url = vals[2];
+        
         JSONObject obj1 = new JSONObject();
         final ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("CURRENTUSER", username));
@@ -124,6 +137,14 @@ public class AddFriendsActivity extends Activity implements OnClickListener{
                                }
                            }); 
                            //frndTxt.setText("You have no friends");
+                       }else {
+                           runOnUiThread(new Runnable() {
+                               public void run() {
+                            TextView frndTxt = (TextView)findViewById(R.id.defaultadd);
+                            //receivedFriendshipRequestArray.add("Yiu have no pending friend requests ");
+                            frndTxt.setVisibility(0);
+                               }
+                           }); 
                        }
                        
                    }
@@ -152,6 +173,8 @@ public class AddFriendsActivity extends Activity implements OnClickListener{
             new Thread(runnable).start();
             Add = (Button)findViewById(R.id.btn1);
             friendName = (EditText)findViewById(R.id.edttext1);
+            s1 = (Spinner)findViewById(R.id.spinner_addfriends);
+            s1.setOnItemSelectedListener(this);
         Add.setOnClickListener(this);
         
     }
@@ -161,11 +184,13 @@ public class AddFriendsActivity extends Activity implements OnClickListener{
     @Override
     public void onClick(View view) {
         // TODO Auto-generated method stub
-        final String val = friendName.getText().toString();
-        if(val.equals("")){
-            Toast.makeText(AddFriendsActivity.this, "Please enter a friends name", Toast.LENGTH_SHORT).show();
+        String val1 = friendName.getText().toString();
+        // clean up when you change it to AyncTask
+        if(val1.equals("")){
+            Toast.makeText(AddFriendsActivity.this, "Please enter a friends name", Toast.LENGTH_LONG).show();
         }
         else {
+            final String val = val1+"@"+location;
         Log.d("Asked for friendship request",val);
         
             
@@ -195,6 +220,7 @@ public class AddFriendsActivity extends Activity implements OnClickListener{
                                 public void run() {
                                     adapter.add(val);
                                     friendName.setText("");
+                                    Toast.makeText(AddFriendsActivity.this, "You requested "+val+" to add as friend", Toast.LENGTH_SHORT).show();
                            //stuff that updates ui
 
                                }
@@ -260,6 +286,7 @@ public class AddFriendsActivity extends Activity implements OnClickListener{
                             //notifyDataSetChanged();
                             friendNames.remove(position);
                             Log.d("rem ",s+" ");
+                            Toast.makeText(AddFriendsActivity.this, "You removed friend successfully", Toast.LENGTH_SHORT).show();
                             
                    //stuff that updates ui
 
@@ -439,5 +466,18 @@ public class AddFriendsActivity extends Activity implements OnClickListener{
        }
         
        
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        // TODO Auto-generated method stub
+        location = parent.getItemAtPosition(position);
+        //Toast.makeText(parent.getContext(), "OnItemSelectedListener : " + parent.getItemAtPosition(position).toString(),Toast.LENGTH_SHORT).show();
+        
+    }
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
+        // TODO Auto-generated method stub
+        
     }
 }
