@@ -6,14 +6,16 @@
     
     
      >
+     
    <Button 
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
-       android:id = "@+id/donebtn"
-            
+       android:id = "@+id/donebtn" 
        android:text="Done"
        
        android:onClick="onDone"/>
+   
+       
 	<ListView 
     android:id="@+id/friendlist1"
     android:layout_width="wrap_content"

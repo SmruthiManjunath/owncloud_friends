@@ -30,7 +30,7 @@ import com.owncloud.android.R;
 
 
 /**
- * @author smruthi
+ * @author Smruthi Manjunath
  *
  */
 public class FacebookFriendSelectDisplay extends Activity{
@@ -52,26 +52,13 @@ public class FacebookFriendSelectDisplay extends Activity{
         super.onCreate(savedInstanceState);
         
         setContentView(R.layout.selectfacebookfriend);
-        //popUp = new PopupWindow(this);
         
-        /*LayoutInflater layoutInflater = (LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);  
-        View popupView = layoutInflater.inflate(R.layout.selectfacebookfriend, null);
-        popupWindow = new PopupWindow(popupView,LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT); 
-        popupWindow.setFocusable(true);
-        */
-        
-        
-        /*LayoutInflater inflater = (LayoutInflater) FacebookFriendSelectDisplay.this
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        //Inflate the view from a predefined XML layout
-        View layout = inflater.inflate(R.layout.selectfacebookfriend,
-                (ViewGroup) findViewById(R.id.selection_pop));*/
-        // create a 300px width and 470px height PopupWindow
-        //popUp = new PopupWindow(layout, 300, 470, true);
         friendListToPost = new JSONArray();
         // display the popup in the center
         //popUp.showAtLocation(layout, Gravity.CENTER, 0, 0);
+        
         listView = (ListView)findViewById(R.id.friendlist1);
+        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         //listView = (ListView) popupView.findViewById(R.id.friendlist1);
         Log.i(TAG,"heeeeeeeeeeeeeeeeeeeeeeeeeeeeeere");
         
@@ -81,6 +68,7 @@ public class FacebookFriendSelectDisplay extends Activity{
         }
         //friendArray = getIntent().getExtras().getStringArrayList("friendName");
         friendArray = i.getStringExtra("friendName");
+        friendList.add("FacebookSync with All");
         try {
             jary = new JSONArray(friendArray);
             JSONObject obj;
@@ -97,22 +85,12 @@ public class FacebookFriendSelectDisplay extends Activity{
         Log.d(TAG,"herrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr "+friendList.size());
         if(friendList.size()!=0){
         facebookfriendadapter = new facebookfriendArrayAdapter(this,R.layout.friendrow,friendList);
+        //facebookfriendadapter = new facebookfriendArrayAdapter(this,android.R.layout.simple_list_item_checked,friendList);
         listView.setAdapter(facebookfriendadapter);
         
         
-        /*findViewById(R.id.selection_pop).post(new Runnable() {
-            public void run() {
-                bt = (Button)findViewById(R.id.donebtn);
-                bt.setVisibility(1);
-              popupWindow.showAtLocation(findViewById(R.id.selection_pop), Gravity.CENTER, 0, 0);
-              
-            }
-         }); */
-       // popupWindow.showAtLocation(FacebookFriendSelectDisplay.this, 20, 20, 10);
-        //popupWindow.showAsDropDown(btnOpenPopup, 20, -5);
-        //popupWindow.showAtLocation(findViewById(R.id.), gravity, x, y)
+      
         }
-        //popUp.setContentView(R.layout.selectfacebookfriend);
     }
     @Override
     public void onDestroy(){
@@ -121,8 +99,21 @@ public class FacebookFriendSelectDisplay extends Activity{
     }
     public void onDone(View v){
         Log.d(TAG+"wekjw",friendListToPost.length()+" ");
+        
+        
+        
+        for(int i = 0;i<friendListToPost.length();i++){
+            try {
+                Log.d("Printign array contents before pushing to the server ",friendListToPost.getJSONObject(i).toString());
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
         PushToServerAsync pushdata = new PushToServerAsync();
-        pushdata.execute(friendListToPost);
+        JSONArray jaryPush = new JSONArray();
+        jaryPush.put(friendListToPost);
+        //pushdata.execute(jaryPush);
         onDestroy();
         //LocalActivityManager manager = getLocalActivityManager();
         //String currentTag = mTabHost.getCurrentTabTag();
@@ -132,22 +123,101 @@ public class FacebookFriendSelectDisplay extends Activity{
         //FacebookFriendSelectDisplay.finish();
         //popupWindow.dismiss();
     }
+ 
     public void onCheckboxClicked(View v){
         final int position =listView.getPositionForView((View) v.getParent());
-        
-        ((CheckBox)((View)v.getParent()).findViewById(R.id.isSelected)).setChecked(true);
+        friendRowholder holder;
+        //((CheckBox)((View)v.getParent()).findViewById(R.id.isSelected)).setChecked(true);
         boolean chk1 = ((CheckBox)((View)v.getParent()).findViewById(R.id.isSelected)).isChecked();
-        //friendListToPost = new JSONArray();
+        Log.i(TAG,chk1+" ");
         if(chk1 == true){
+            Log.i(TAG,"in check");
+            //((CheckBox)((View)v.getParent()).findViewById(R.id.isSelected)).setChecked(true);
+        }else{
+            Log.i(TAG,"in uncheck");
+            for(int i=0;i<friendListToPost.length();i++){
+                try {
+                    //Log.d("Deleteing th euser",friendListToPost.getJSONObject(i).toString());
+                    //Log.d("Deleteing th hjuytrrtty",position+" "+jary.getJSONObject(position-1).toString());
+                    
+                    if(friendListToPost.getJSONObject(i).optString("id") == (jary.getJSONObject(position-1)).optString("id")){
+                        Log.d("Deleteing th euser",friendListToPost.getJSONObject(i).toString());
+                        
+                        //JSONObject obj1 = friendListToPost.getJSONObject(i);
+                        
+                        //j1.
+                        
+                        //obj1.remove("id");
+                        //obj1.remove("name");
+                        //JSONArray names = JSONObject.names();
+                        //obj1.getJSONArray(Integer.toString(i));
+                    }
+                    
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            ((CheckBox)((View)v.getParent()).findViewById(R.id.isSelected)).setChecked(false);
+        }
+        Log.d(TAG,position+" ");
+        //friendListToPost = new JSONArray();
+       
+        if(chk1 == true && position == 0){
+            //ViewHolder vHolder = null;
+            int size = listView.getChildCount();
+            
+            for(int i = 1;i<size;i++){
+                   //listView.setItemChecked(i, true);
+                Log.d(TAG,i+" ");
+                View v1 = facebookfriendadapter.getView(i,v,listView);
+                   holder = (friendRowholder) v1.getTag();
+                   //CheckBox ch = (CheckBox)v1.findViewById(R.id.isSelected);
+                   //Log.i(TAG,ch.toString());
+                   //ch.toggle();
+                  // boolean checked = ch.isChecked();
+                 // holder.checkbox=(CheckBox)v1.findViewById(R.id.isSelected);
+                   
+                   //holder.checkbox.setChecked(true);
+                   /*if(checked== true){
+                       Log.i(TAG,"in check");
+                       ((CheckBox)v1.findViewById(R.id.isSelected)).setChecked(true);
+                   }else{
+                       Log.i(TAG,"in uncheck");
+                       ((CheckBox)v1.findViewById(R.id.isSelected)).setChecked(false);
+                   } */
+                  
+                   holder.checkbox.setChecked(true);
+                   //Log.d(TAG, i+" "+ch.isChecked()+" ");
+                   //ch.setChecked(!checked);
+                   //ch.setEnabled(true);
+                   //ch.setChecked(true);
+                   
+                  //listView.setItemChecked(i, true);
+                  v1.setTag(holder);
+                   //facebookfriendadapter.(i, true);
+                  // ch.setTag(ch);
+                //Log.d(TAG, i+" "+checked+" ");
+               
+            }
+            facebookfriendadapter.notifyDataSetChanged();
+            friendListToPost.put(jary);
+        }else if(chk1== true){
+            Log.d(TAG,position+" ");
             try {
-                     Log.d(TAG,position+" ");
-                     friendListToPost.put(jary.getJSONObject(position));//jary.getJSONObject(position);
-                     k++;
+                
+                friendListToPost.put(jary.getJSONObject(position-1));//(jary.getJSONObject(position));
+                Log.i(TAG,"position "+position+" i+ "+k);
+                k++;
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-                
-            }
+            }//jary.getJSONObject(position);
+            
+        }
+        else if (chk1 == false){
+            
+            
         }
         
         
@@ -173,8 +243,10 @@ public class FacebookFriendSelectDisplay extends Activity{
             View row = convertView;
             LayoutInflater inflater = ((Activity)context).getLayoutInflater();
             row = inflater.inflate(layoutResourceId,parent,false);
-            Log.d("getView"," in getvi");
+            //Log.d("getView"," in getvi");
             holder = new friendRowholder();
+            
+            
             holder.frndPos = Objects.get(position);
             holder.checkbox = (CheckBox)row.findViewById(R.id.isSelected);
             holder.frndNametxt = (TextView)row.findViewById(R.id.friend_row);
@@ -182,28 +254,36 @@ public class FacebookFriendSelectDisplay extends Activity{
             if(row.getTag()==null){
             row.setTag(holder);
             String text = friendList.get(position);
-            Log.d("ine pos",text);
+            //Log.d("ine pos",text);
             holder.frndNametxt.setText(text);
+           
             return row;
             } else{
-                holder.frndNametxt.setText("You have no pending friend requests");
-                return null;
+                Log.i(TAG,"here");
+                if(holder.checkbox.isChecked() == true && position == 0){
+                   for(int i = 0; i<facebookfriendadapter.getCount();i++){
+                       listView.setItemChecked(i, true);
+                   }
+                    
+                }
+            return row;    
             }
+            
            
         }
         
-       public class friendRowholder{
-           String frndPos;
-           TextView frndNametxt;
-           CheckBox checkbox;
-           
-           
-       }
+       
         
        
     }
 
-
+    public class friendRowholder{
+        String frndPos;
+        TextView frndNametxt;
+        CheckBox checkbox;
+        
+        
+    }
     
     
 }

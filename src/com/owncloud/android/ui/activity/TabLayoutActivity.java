@@ -34,25 +34,25 @@ public class TabLayoutActivity extends TabActivity{
         
         
         //intent = new Intent(this,YourFriendsActivity.class);
-        intent = new Intent(this,YourFriendsActivity.class);
+        intent = new Intent(this,YourFriendsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         spec1 = mTabHost.newTabSpec("YourFriends")
                          .setIndicator("Your Friends")
                          .setContent(intent);
         mTabHost.addTab(spec1);
         
-        intent = new Intent(this,AddFriendsActivity.class);
+        intent = new Intent(this,AddFriendsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         spec2 = mTabHost.newTabSpec("AddFriends")
                          .setIndicator("Add Friends")
                          .setContent(intent);
         mTabHost.addTab(spec2);
         
-        intent = new Intent(this,AcceptFriendRequestsActivity.class);
+        intent = new Intent(this,AcceptFriendRequestsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         spec3 = mTabHost.newTabSpec("AcceptFriendsRequests")
                          .setIndicator("Accept Friend Requests")
                          .setContent(intent);
         mTabHost.addTab(spec3);
         
-        intent = new Intent(this,FacebookSync.class);
+        intent = new Intent(this,FacebookSync.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         spec4 = mTabHost.newTabSpec("Facebook")
                          .setIndicator("Facebook")
                          .setContent(intent);
@@ -78,10 +78,12 @@ public class TabLayoutActivity extends TabActivity{
         //manager.destroyActivity(currentTag, true);
         manager.startActivity(currentTag, new Intent(this, currentClass)); 
     }
+    
     @Override
     public void onStart(){
-        super.onStart();
         callforresumeStart();
+        super.onStart();
+        
         
     }
     @Override

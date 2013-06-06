@@ -176,7 +176,9 @@ public class AcceptFriendRequestsActivity extends Activity {
                         runOnUiThread(new Runnable() {
                             public void run() {
                                 String s = Integer.toString(position);
-                                friendadapter.add(s);
+                                //friendadapter.add(s);
+                                receivedFriendshipRequestArray.remove(position);
+                                friendadapter.remove(s);
                                 notifyDataChanged();
                                 Toast.makeText(AcceptFriendRequestsActivity.this, "You accepted friend request successfully", Toast.LENGTH_SHORT).show();
                           }
@@ -225,7 +227,9 @@ public class AcceptFriendRequestsActivity extends Activity {
                         runOnUiThread(new Runnable() {
                             public void run() {
                                 String s = Integer.toString(position);
+                                receivedFriendshipRequestArray.remove(position);
                                 friendadapter.remove(s);
+                                notifyDataChanged();
                                 Toast.makeText(AcceptFriendRequestsActivity.this, "You removed friend request successfully", Toast.LENGTH_SHORT).show();
                            }
                        });
