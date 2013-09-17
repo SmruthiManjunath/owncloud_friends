@@ -161,6 +161,7 @@ public class FileDisplayActivity extends SherlockFragmentActivity implements
     
     private OCFile mWaitingToPreview;
     private Handler mHandler;
+    private SharedPreferences mPreferences;
     //AutoCompleteTextView textview;
     public static ArrayList<String> sharefriendList = new ArrayList<String>();
     @Override
@@ -533,7 +534,17 @@ public class FileDisplayActivity extends SherlockFragmentActivity implements
                     startActivity(friendsIntent);
                     break;
                 }
-            
+                case R.id.action_logout: {
+                    Intent intent = new Intent(this,AuthenticatorActivity.class);
+                    AccountManager accountManager = AccountManager.get(this);
+                    Account owncCloudAccounts[] = accountManager.getAccountsByType(AccountAuthenticator.ACCOUNT_TYPE);
+                    for (int index = 0; index < owncCloudAccounts.length; index++) {
+                        accountManager.removeAccount(owncCloudAccounts[index], null, null);
+                        }
+                    Toast.makeText(FileDisplayActivity.this,"You have been logged out", Toast.LENGTH_LONG).show();
+                    startActivity(intent);
+                    break;
+                }
             default:
                 retval = super.onOptionsItemSelected(item);
         }
