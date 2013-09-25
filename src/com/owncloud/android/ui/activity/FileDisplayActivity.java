@@ -29,6 +29,8 @@ import org.json.JSONObject;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.AccountManagerFuture;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
@@ -535,14 +537,45 @@ public class FileDisplayActivity extends SherlockFragmentActivity implements
                     break;
                 }
                 case R.id.action_logout: {
-                    Intent intent = new Intent(this,AuthenticatorActivity.class);
-                    AccountManager accountManager = AccountManager.get(this);
-                    Account owncCloudAccounts[] = accountManager.getAccountsByType(AccountAuthenticator.ACCOUNT_TYPE);
-                    for (int index = 0; index < owncCloudAccounts.length; index++) {
-                        accountManager.removeAccount(owncCloudAccounts[index], null, null);
+                    Context context = getApplicationContext();
+                    final Intent intent = new Intent(this,AccountSelectActivity.class);
+                    //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    
+                    final AccountManager accountManager = AccountManager.get(this);//(AccountManager)getSystemService(ACCOUNT_SERVICE);
+                    /*Account owncCloudAccounts[] = accountManager.getAccountsByType(AccountAuthenticator.ACCOUNT_TYPE);
+                    Log.d(TAG,"Leaving the application "+owncCloudAccounts.length);
+                    final Account acc = AccountUtils.getCurrentOwnCloudAccount(this);
+                   //accountManager.removeAccount(acc, null, null);
+                    new AlertDialog.Builder(this)
+                    .setTitle("Facebook Sync")
+                    .setPositiveButton("Logout", new OnClickListener() {
+                        
+                        //private StringBuilder password;
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            accountManager.removeAccount(acc, null, null);
+                            startActivity(intent);
+                            finish();
                         }
-                    Toast.makeText(FileDisplayActivity.this,"You have been logged out", Toast.LENGTH_LONG).show();
+                    }) 
+                    .setNegativeButton(R.string.common_cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog,int id) {
+                           
+                            dialog.dismiss();
+                        }
+                    }).show();*/
                     startActivity(intent);
+                    //
+                   //Log.d(TAG,"hereeeeeeeeeeeeeeeeeeeeee!!!!!!!!!!!!!!!!!!!!"+accountManager.getPassword(acc)+" "+accountManager.peekAuthToken(acc, AccountManager.KEY_PASSWORD)+accountManager.peekAuthToken(acc, AccountManager.KEY_USERDATA));
+                    //for (int index = 0; index < owncCloudAccounts.length; index++) {
+                        //accountManager.clearPassword(acc);
+                        
+                        //accountManager.
+                       // } 
+                    Log.d(TAG,"wejhqoirrrrrrrrrrrroheqqqqqqqqqqqq!!!!!!!!! ");
+                    //finish();
                     break;
                 }
             default:
@@ -550,7 +583,13 @@ public class FileDisplayActivity extends SherlockFragmentActivity implements
         }
         return retval;
     }
-
+private AccountManagerCallback<Boolean> func1() {
+    Intent intent = new Intent(this,AuthenticatorActivity.class);
+    
+    startActivity(intent);
+    return null;
+    
+}
     private void startSynchronization() {
         ContentResolver.cancelSync(null, AccountAuthenticator.AUTH_TOKEN_TYPE);   // cancel the current synchronizations of any ownCloud account
         Bundle bundle = new Bundle();

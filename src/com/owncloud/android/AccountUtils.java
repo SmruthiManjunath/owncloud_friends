@@ -20,13 +20,17 @@
 package com.owncloud.android;
 
 import com.owncloud.android.authenticator.AccountAuthenticator;
+import com.owncloud.android.ui.activity.AuthenticatorActivity;
+import com.owncloud.android.ui.activity.FileDisplayActivity;
 import com.owncloud.android.utils.OwnCloudVersion;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 public class AccountUtils {
     public static final String WEBDAV_PATH_1_2 = "/webdav/owncloud.php";
@@ -146,6 +150,13 @@ public class AccountUtils {
             e.printStackTrace();
             return null;
         }
+    }
+    public static void RemoveAccount(Context context)
+    {
+        
+        
+        //Toast.makeText(FileDisplayActivity.this,"You have been logged out", Toast.LENGTH_LONG).show();
+        
     }
 
 }
